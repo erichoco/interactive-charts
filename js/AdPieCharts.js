@@ -113,6 +113,22 @@ function AdPieCharts() {
                         (!this_classes.match('clicked'))? this_classes + 'clicked'
                                                         : this_classes.replace('clicked', '')
                 );
+
+                // Select this' svg parent
+                var svg_name = d3.select(this.parentNode.parentNode).attr('name');
+
+                // work around version for kuad
+                if (svg_name === 'type0') {
+                    svg_name = 'impression';
+                }
+                else if (svg_name === 'type1') {
+                    svg_name = 'click';
+                }
+                else {
+                    svg_name = 'ctr';
+                }
+
+                cur_context = update_line_from_bottom(svg_name, 'ad_cat', i);
             }
         }
 
@@ -146,20 +162,14 @@ function AdPieCharts() {
     }
 
     this.create = function(raw_data, context, cat_name, type_num) {
-        /*var data = [
-            [11975,  5871, 8916, 2868],
-            [ 1951, 10048, 2060, 6171],
-            [ 8010, 16145, 8090, 8045]
-        ];*/
+
         var dataset = prepare_data(raw_data, 'ad_cat');
         cur_context = context;
 
         var data = [];
         for (k in dataset) {
-            for (var i = 0; i < dataset[k].length; i++) {
-                data_tol.push(dataset[k][0]);
-                data.push(dataset[k].slice(1, dataset[k].length));
-            };
+            data_tol.push(dataset[k][0]);
+            data.push(dataset[k].slice(1, dataset[k].length));
         }
         /*
         for (var i = 0; i < data.length; i++) {
