@@ -222,12 +222,26 @@ function LineChart() {
                             .append('svg:path')
                                 .attr('class', function(d, i) {
                                     var base_value = this_obj.chart_context['base_value'];
-                                    return 'path-line ' + platform_class_name[base_value[i]];
+                                    return 'path-line ';// + platform_class_name[base_value[i]];
+                                })
+                                .style('stroke', function(d, i) {
+                                    var this_context = this_obj.chart_context;
+                                    var this_col_scheme = COLOR_SCHEME[this_context['base']];
+                                    console.log('line', this_context);
+                                    line_dot_color = this_col_scheme[this_context['base_value'][i]];
+                                    console.log(this_context['base_value'][i]);
+                                    return line_dot_color;
                                 })
                                 .transition()
                                 .attr('d', line);
         // Remove redundant lines
-        type_lines.exit().remove();
+        var exit_line = type_lines.exit();
+
+        console.log(exit_line.attr('class', function(d, i) {
+            console.log('exit idx', i);
+            return '';
+        })); 
+        exit_line.remove();
 
         // Join new data to dots
         var dots = type_lines.selectAll('circle')
@@ -240,9 +254,10 @@ function LineChart() {
             .attr('cx', line.x())
             .attr('cy', line.y());
 
-        dots.enter()
+        var new_dots = dots.enter()
             .append('svg:circle')
             .attr('class', function(d, i) {
+                return 'dot';
                 var line_class = d3.select(this.parentNode.childNodes[0]).attr('class');
                 for (var i = 0; i < platform_class_name.length; i++) {
                     if (line_class.match(platform_class_name[i])) {
@@ -263,6 +278,9 @@ function LineChart() {
             });
 
         dots.exit().remove();
+
+        var line_dot_color = '#5e5e5e';
+        new_dots.style('fill', line_dot_color);
     }
 
 
@@ -302,7 +320,6 @@ function LineChart() {
 
     this.update = function() {
         var data_pairs_set = set_background(this, this.chart_data);
-        //console.log(data_pair);
 
         chart_svg.select('.x')
                 .call(axis['x'])

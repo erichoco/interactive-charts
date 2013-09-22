@@ -127,8 +127,9 @@ function AdPieCharts() {
                 else {
                     svg_name = 'ctr';
                 }
+                console.log('clicked index', i + 1);
 
-                cur_context = update_line_from_bottom(svg_name, 'ad_cat', i);
+                cur_context = update_line_from_bottom(svg_name, 'ad_cat', i+1);
             }
         }
 
@@ -171,11 +172,10 @@ function AdPieCharts() {
             data_tol.push(dataset[k][0]);
             data.push(dataset[k].slice(1, dataset[k].length));
         }
-        /*
-        for (var i = 0; i < data.length; i++) {
-            data_tol[i] = dataset[i][0];
-            dataset[i] = dataset[i].slice(1, dataset[i].length);
-        }*/
+        
+        for (var i = 0; i < 6; i++) {
+            COLOR_SCHEME['ad_cat'].push(z(i));
+        };
 
         chart_m = $charts.innerWidth() / data.length / 2 * 0.14;
         chart_r = $charts.innerWidth() / data.length / 2 * 0.85;
