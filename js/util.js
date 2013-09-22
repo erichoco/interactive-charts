@@ -149,3 +149,7 @@ function prepare_data(raw_data, base) {
     console.log('prepared data', dataset);
     return dataset;//[dataset['impression'], dataset['click'], dataset['ctr']];
 }
+
+function test() {
+    
+}
