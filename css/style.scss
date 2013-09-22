@@ -1,0 +1,210 @@
+$ios_color: #5ab5df;
+$and_color: #A4D247;
+$tol_color: #5E5E5E;
+
+$ios_color_d: #1a6486;
+$and_color_d: #5D7B1E;
+$tol_color_d: #454545;
+
+@mixin button($color, $color_d) {
+    background: $color;
+    background: -moz-linear-gradient(top,$color 0%,$color_d 100%);
+    /*background: -webkit-gradient(linear,left top,left bottom,color-stop(0%,$color),color-stop(100%,$color_d));*/
+    background: -webkit-linear-gradient(top,$color 0%,$color_d 100%);
+    background: -o-linear-gradient(top,$color 0%,$color_d 100%);
+    background: -ms-linear-gradient(top,$color 0%,$color_d 100%);
+    background: linear-gradient(top,$color 0%,$color_d 100%);
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='$color',endColorstr='$color_d',GradientType=0);
+}
+@mixin clicked($color, $color_d) {
+    background: $color_d;
+    background: -moz-linear-gradient(top,$color_d 0%,$color 100%);
+    background: -webkit-gradient(linear,left top,left bottom,color_d-stop(0%,$color_d),color_d-stop(100%,$color));
+    background: -webkit-linear-gradient(top,$color_d 0%,$color 100%);
+    background: -o-linear-gradient(top,$color_d 0%,$color 100%);
+    background: -ms-linear-gradient(top,$color_d 0%,$color 100%);
+    background: linear-gradient(top,$color_d 0%,$color 100%);
+    filter:progid:DXImageTransform.Microsoft.gradient(startcolor_dstr='$color_d',endcolor_dstr='$color',GradientType=0);
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-size: 100%;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+#content-wrapper {
+    margin: 10px auto;
+    padding: 20px;
+    width: 60%;
+    //height: 2000px;
+    border: solid 1px #D1D0D0;
+    box-shadow: 2px 2px 1px #D1D0D0;
+}
+
+#line-chart {
+    margin: 1%;
+    width: 98%;
+    height: 400px;
+    overflow: auto;
+    overflow-y: hidden;
+    border: solid 1px #D1D0D0;
+    input {
+        margin: 10px 5px;
+    }
+}
+
+#bottom-slider {
+    margin: 1%;
+    width: 98%;
+    overflow: hidden;
+    border: solid 1px #D1D0D0;
+
+    ul {
+        padding: 0;
+        width: 100000px;
+        list-style: none;
+    }
+    li {
+        float: left;
+    }
+}
+
+//#bar-charts {
+.bottom-charts {
+    margin: 1%;
+    width: 98%;
+    overflow: auto;
+    overflow-y: hidden;
+    //border: solid 1px #D1D0D0;
+
+    #labels-wrapper {
+        padding: 5px;
+    }
+}
+
+.axis {
+    path {
+        fill: none;
+        shape-rendering: crispEdges;
+    }
+    line {
+        @extend path;
+        stroke: #D1D0D0;
+    }
+}
+
+.path-line{
+    fill: none;
+    stroke: $tol_color;
+    stroke-width: 1.5px;
+}
+
+.dot {
+    stroke-width: 1.5px;
+    &.ios-bg {
+        fill: $ios_color;
+    }
+    &.and-bg {
+        fill: $and_color;
+    }
+    &.tol-bg {
+        stroke: $tol_color;
+    }
+}
+
+#ring {
+    fill: none;
+    stroke: #D0D0D0;
+    stroke-width: 4px;
+}
+
+div.platform-label {
+    margin: 10px 10px 0px 10px;
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    box-shadow: 2px 2px 1px #D1D0D0;
+}
+div.platform-name {
+    margin: 0px 10px 10px 2px;
+    display: inline-block;
+}
+.chart-wrapper {
+    margin: 10px;
+}
+.chart-label {
+    padding: 10px;
+    width: 100px;
+    display: inline-block;
+    font-size: 1.1em;
+    text-align: right;
+}
+.sub-chart {
+    padding: 5px 0;
+    display: inline-block;
+    vertical-align: top;
+    zoom: 1; /* Fix for IE7 */
+    *display: inline; /* Fix for IE7 */
+
+    .horiz-bar {
+        margin: 2px 0;
+        display: inline-block;
+        color: white;
+        text-align: center;
+        /*border-radius: 0 5px 5px 0;
+        -moz-border-radius: 0 5px 5px 0;
+        -webkit-border-radius: 0 5px 5px 0;*/
+        //border:1px solid #1A87B9
+    }
+    .horiz-bar:hover {
+        opacity: 0.9;
+    }
+    .ios-bg {
+        @include button($ios_color, $ios_color_d);
+        //border:1px solid #1A87B9;
+        border-radius: 5px 0 0 5px;
+        &.clicked {
+            @include clicked($ios_color, $ios_color_d);
+        }
+    }
+    .and-bg {
+        @include button($and_color, $and_color_d);
+        //border:1px solid #459A00;
+        border-radius: 0 5px 5px 0;
+        &.clicked {
+            @include clicked($and_color, $and_color_d);
+        }
+    }
+    .tol-bg {
+        @include button($tol_color, $tol_color_d);
+        border-radius: 5px;
+        /*&.clicked {
+            @include clicked($tol_color, $tol_color_d);
+        }*/
+    }
+}
+#ad-pie-charts {
+    g div {
+        text-align: center;
+        font-size: 1.2em;
+    }
+}
+.legend-label {
+    box-shadow: 2px 2px 1px #D1D0D0;
+}
+
+.ios-bg {
+    background-color: $ios_color;
+    stroke: $ios_color;
+}
+.and-bg {
+    background-color: $and_color;
+    stroke: $and_color;
+}
+.tol-bg {
+    background-color: $tol_color;
+    stroke: $tol_color;
+}

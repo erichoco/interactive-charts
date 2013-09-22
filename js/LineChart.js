@@ -1,0 +1,322 @@
+function LineChart() {
+    /*******************
+     * private members *
+     *******************/
+
+    var chart = d3.select('#line-chart');
+    // svg object presenting line chart
+    var chart_svg;
+
+    // margin, width and height of the chart 
+    // axes spaces are not included in width and height
+    var chart_m = {
+        top: 50,
+        right: 30,
+        bottom: 50,
+        left: 60
+    };
+    var chart_w = parseInt(chart.style('width')) * 0.95 - chart_m.left - chart_m.right,
+        chart_h = parseInt(chart.style('height')) * 0.9 - chart_m.top - chart_m.bottom;
+
+    var platform_class_name = ['tol-bg', 'ios-bg', 'and-bg'];
+
+    /* Preperation functions for drawing line */
+    // default scale value, will be overwritten later on
+    var scale = {
+        'x': d3.time.scale()
+                .domain([new Date('2012/1/1'), new Date('2012/12/31')])
+                .range([0, chart_w]),
+        'y': d3.scale.linear()
+                .domain([0, 1000])
+                .range([chart_h, 0])
+    }
+    var axis = {
+        'x': d3.svg.axis()
+                .scale(scale['x'])
+                .tickFormat(d3.time.format('%m/%d'))
+                .orient('bottom'),
+        'y': d3.svg.axis()
+                .scale(scale['y'])
+                .tickSize(-chart_w)
+                .orient('left')
+    }
+    var line = d3.svg.line()
+                .interpolate('linear')
+                //.transition()
+                .x(function(d) {
+                    return scale['x'](d[0]);
+                })
+                .y(function(d) {
+                    return scale['y'](d[1]);
+                });
+    /* End of preperation functions for drawing line */
+
+    /* 
+     * Configure the axis functions. (rescaling)
+     */
+    var config_axes = function(x_domain, y_domain) {
+        scale['x'].domain(x_domain);
+        scale['y'].domain(y_domain);
+        axis['x'].scale(scale['x']);
+        axis['y'].scale(scale['y']);
+    }
+
+    /*
+     * Add tooltip to dots of the chart
+     * refer to static/js/report_js/report_picture.js by Cathy
+     */
+    var handle_tooltip = function(this_obj, el, data, should_add) {
+        function get_x_val(date) {
+            date = new Date(date);
+            mon = date.getMonth() + 1;
+            day = date.getDate();
+            hour = date.getHours();
+            min = date.getMinutes();
+            year = date.getFullYear();
+
+            if (hour < 10)
+                hour = '0'+ hour.toString();
+
+            if (min < 10)
+                min = '0' + min.toString();
+
+            if (this_obj.chart_context['unit'] === 'weekly' || this_obj.chart_context['unit'] === 'daily') 
+                return year + '/' + mon + '/' + day;
+            else if (this.chart_context['unit'] === 'monthly') 
+                return year + '/' + mon;
+            else if (this.chart_context['unit'] === 'hourly') 
+                return year + '/' + mon + '/' + day + " " + hour + ':' + min;
+        }
+
+        function get_y_val(val) {
+            if (this_obj.chart_context['type'] === 'ctr') {
+                return val.toFixed(2) + '%';
+            }
+            else {
+                return val;
+            }
+        }
+
+        function show_tooltip(top, left, content) {
+            $('<div id="tooltip">' + content + '</div>').css({
+                'padding': '2px',
+                'position': 'absolute',
+                'display': 'none',
+                'top': top - 25 + 'px',
+                'left': left + 10 + 'px',
+                'border': '1px solid #A9A9A9',
+                'background-color': '#CFCFCF',
+                'opacity': '0.8'
+            }).appendTo('#line-chart').fadeIn(100);
+        }
+
+        var el_offset = $(el[0]).offset();
+        if (should_add && !$('#tooltip').length) {
+            var data_type_name = {
+                'impression': 'Impressions',
+                'click': 'Clicks',
+                'ctr': 'CTR'
+            }
+            var tooltip_content = get_x_val(data[0]) + ' ' +
+                                  data_type_name[this_obj.chart_context['type']] + ': ' +
+                                  get_y_val(data[1]);
+            show_tooltip(el_offset.top, el_offset.left, tooltip_content);
+            chart_svg.append('circle')
+                .transition()
+                .attr('id', 'ring')
+                .attr('cx', el.attr('cx'))
+                .attr('cy', el.attr('cy'))
+                .attr('r', 5.2);
+        }
+        else {
+            $('#tooltip').fadeOut(200, function() {
+                this.remove();
+            });
+            $('#ring').fadeOut(200, function() {
+                this.remove();
+            });
+        }
+    }
+
+    /*
+     * Return x, y values set for the line chart.
+     * Config axes by the way.
+     */
+    var set_background = function(this_obj, raw_data) {
+        var data_pairs_set = [];
+        var st_date, ed_date;
+        var min_val, max_val;
+
+        for (var i = 0; i < this_obj.chart_context['base_value'].length; i++) {
+            var data_pairs = new Array();
+            //var data = input_set[i];
+
+            for (var j = 0; j < raw_data.length; j++) {
+                var cur_data = raw_data[j];
+                var pair = [];
+
+                if (cur_data[this_obj.chart_context['base']] === this_obj.chart_context['base_value'][i]) {
+                    pair[0] = cur_data['data_time'];
+                    pair[1] = cur_data[this_obj.chart_context['type']];
+                    data_pairs.push(pair);
+
+                    update_domain(cur_data);
+                }
+            }
+
+            config_axes([st_date, ed_date], [0, max_val]); // set min val = 0 temperarily
+
+            data_pairs_set[i] = data_pairs;
+        };
+
+        return data_pairs_set;
+
+        function update_domain(data) {
+            if (st_date) {
+                st_date = (data['data_time'] < st_date)? data['data_time']
+                                                       : st_date;
+            }
+            else {
+                st_date = data['data_time'];
+            }
+            if (ed_date) {
+                ed_date = (data['data_time'] > ed_date)? data['data_time']
+                                                       : ed_date;
+            }
+            else {
+                ed_date = data['data_time'];
+            }
+
+            if (min_val) {
+                min_val = (data[this_obj.chart_context['type']] < min_val)? data[this_obj.chart_context['type']]
+                                                                : min_val;
+            }
+            else {
+                min_val = data[this_obj.chart_context['type']];
+            }
+            if (max_val) {
+                max_val = (data[this_obj.chart_context['type']] > max_val)? data[this_obj.chart_context['type']]
+                                                                : max_val;
+            }
+            else {
+                max_val = data[this_obj.chart_context['type']];
+            }
+        }
+    }
+
+    var update_line_dot = function(this_obj, data_pairs_set) {
+
+        // Join new data to lines
+        var type_lines = chart_svg.selectAll('.type-line')
+                            .data(data_pairs_set);
+
+        // Translate existing lines translate
+        type_lines.select('path')
+                .transition()
+                .attr('d', line);
+
+        // Add New line(data pairs)
+        var new_lines = type_lines.enter()
+                            .append('g')
+                                .attr('class', 'type-line')
+                            .append('svg:path')
+                                .attr('class', function(d, i) {
+                                    var base_value = this_obj.chart_context['base_value'];
+                                    return 'path-line ' + platform_class_name[base_value[i]];
+                                })
+                                .transition()
+                                .attr('d', line);
+        // Remove redundant lines
+        type_lines.exit().remove();
+
+        // Join new data to dots
+        var dots = type_lines.selectAll('circle')
+                .data(function(d) {
+                    return d;
+                    //return d3.select(this.parentNode).datum();
+                });
+
+        dots.transition()
+            .attr('cx', line.x())
+            .attr('cy', line.y());
+
+        dots.enter()
+            .append('svg:circle')
+            .attr('class', function(d, i) {
+                var line_class = d3.select(this.parentNode.childNodes[0]).attr('class');
+                for (var i = 0; i < platform_class_name.length; i++) {
+                    if (line_class.match(platform_class_name[i])) {
+                        return 'dot ' + platform_class_name[i];
+                    }
+                }
+            })
+            .attr('cx', line.x())
+            .attr('cy', line.y())
+            .attr('r', 3)
+            .on({
+                'mouseover': function(d) {
+                    handle_tooltip(this_obj, d3.select(this), d, true);
+                },
+                'mouseout': function(d) {
+                    handle_tooltip(this_obj, d3.select(this), d, false);
+                }
+            });
+
+        dots.exit().remove();
+    }
+
+
+    /******************
+     * public members *
+     ******************/
+    // the type and context of line svg chart presenting
+    this.chart_data = [];
+    this.chart_context = {};
+
+    this.create = function(raw_data, context) {
+        this.chart_data = raw_data;
+        this.chart_context = context;
+        var data_pairs_set = set_background(this, raw_data);
+
+        /* Creating real svg elements & binding data */
+        chart_svg = chart.append('svg')
+                        //.data([data_pair])
+                        .attr('width', chart_w + chart_m.left + chart_m.right)
+                        .attr('height', chart_w + chart_m.top + chart_m.bottom)
+                        .append('svg:g')
+                        .attr('transform', 'translate(' + chart_m.left + ',' + chart_m.top + ')');
+
+        chart_svg.append('svg:g')
+                .attr('class', 'x axis')
+                .attr('transform', 'translate(0,' + chart_h + ')')
+                .call(axis['x'])
+                .selectAll('text')
+                    .style('text-anchor','end')
+                    .attr('transform','rotate(-45)');
+        chart_svg.append('g')
+                .attr('class', 'y axis')
+                .call(axis['y']);
+
+        update_line_dot(this, data_pairs_set);
+    }
+
+    this.update = function() {
+        var data_pairs_set = set_background(this, this.chart_data);
+        //console.log(data_pair);
+
+        chart_svg.select('.x')
+                .call(axis['x'])
+                .selectAll('text')
+                    .style('text-anchor','end')
+                    .attr('transform','rotate(-45)');
+        chart_svg.select('.y')
+                .call(axis['y']);
+
+        update_line_dot(this, data_pairs_set);
+    }
+
+    this.reset_to_tol = function() {
+        this.chart_context['base_value'] = [0];
+        this.update();
+    }
+};
