@@ -3,12 +3,23 @@
  * get_percentage(1, [1, 2, 3], 2) -> 16.67
  */
 function get_percentage(data, dataset, round_place) {
+
     var level = 1;
     for (var i = 0; i < round_place; i++) {
         level *= 10;
     };
     return Math.round(data * 100 * level / d3.sum(dataset)) / level;
 }
+
+function type_value_text(d) {
+    // Add % for CTR
+    if (d % 1 !== 0) {
+        return d.toFixed(2) + '%';
+    }
+    else {
+        return d;
+    }
+};
 
 
 function gen_fake_data(time_u, data_base) {
@@ -62,41 +73,6 @@ function gen_fake_data(time_u, data_base) {
         datum[data_base] = 0;
         data.push(datum);
 
-
-        /*
-        data.push({
-            "data_time": new Date('2012/' + month + '/' + (i % 25 + 1)),
-            "click": click,
-            "impression": imp,
-            "ctr": ctr,
-            "platform": 1 // iOS
-        });
-
-        click = Math.floor(Math.random()*30);
-        imp = Math.floor(Math.random()*2000 + 30);
-        ctr = click / imp * 100;
-        data.push({
-            "data_time": new Date('' + month + '/' + (i % 25 + 1) + '/2012'),
-            "click": click,
-            "impression": imp,
-            "ctr": ctr,
-            "platform": 2 // android
-        });
-
-        click = ios_unit_data['click'] + and_unit_data['click'];
-        imp = ios_unit_data['impression'] + and_unit_data['impression'];
-        ctr = click / imp * 100;
-        data.push({
-            "data_time": new Date(2012, month - 1, (i % 25 + 1)),
-            "click": click,
-            "impression": imp,
-            "ctr": ctr,
-            "platform": 0 // total
-        });
-
-        /*data.push(ios_unit_data);
-        data.push(and_unit_data);
-        data.push(tol_unit_data);*/
     }
 
 
@@ -148,9 +124,5 @@ function prepare_data(raw_data, base) {
 
     console.log('prepared data', dataset);
     return dataset;//[dataset['impression'], dataset['click'], dataset['ctr']];
-}
-
-function test() {
-    
 }
 

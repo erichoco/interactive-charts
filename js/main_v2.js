@@ -73,13 +73,13 @@
             app_test_data = gen_fake_data('daily', 'app_cat');
 
             if (line_chart.chart_context['base'] === 'platform') {
-                line_chart.chart_data = plat_test_data;
+                line_chart.chart_data = plat_test_data[1];
             }
             else if (line_chart.chart_context['base'] === 'ad_cat') {
-                line_chart.chart_data = ad_test_data;
+                line_chart.chart_data = ad_test_data[1];
             }
             else {
-                line_chart.chart_data = app_test_data;
+                line_chart.chart_data = app_test_data[1];
             }
 
             line_chart.update();
