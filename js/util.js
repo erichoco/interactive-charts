@@ -126,3 +126,130 @@ function prepare_data(raw_data, base) {
     return dataset;//[dataset['impression'], dataset['click'], dataset['ctr']];
 }
 
+function appPieData() {
+    return [
+    {
+        "name": "Impressions",
+        "children": [
+        {
+            "name": "google",
+            "children": [
+                { "name": "drive", "val": 1000 },
+                { "name": "play", "val": 1000 },
+                { "name": "gmail", "val": 1000 },
+                { "name": "youtube", "val": 1000 },
+                { "name": "android", "val": 1000 },
+                { "name": "search", "val": 1000 }
+            ]
+        },
+        {
+            "name": "apple",
+            "children": [
+                { "name": "iphone", "val": 1000 },
+                { "name": "mac", "val": 1000 }
+            ]
+        },
+        {
+            "name": "MS",
+            "children": [
+                { "name": "hotmail", "val": 1000 },
+                { "name": "hotmail", "val": 1000 },
+                { "name": "hotmail", "val": 1000 },
+                { "name": "Windows", "val": 1000 }
+            ]
+        },
+        {
+            "name": "Facebook",
+            "children": [
+                { "name": "timeline", "val": 1000 },
+                { "name": "timeline", "val": 1000 },
+                { "name": "messanger", "val": 1000 }
+            ]
+        }
+        ]
+    },
+    {
+        "name": "Clicks",
+        "children": [
+        {
+            "name": "google",
+            "children": [
+                { "name": "drive", "val": 1000 },
+                { "name": "play", "val": 1000 },
+                { "name": "gmail", "val": 1000 },
+                { "name": "youtube", "val": 1000 },
+                { "name": "android", "val": 1000 },
+                { "name": "search", "val": 1000 }
+            ]
+        },
+        {
+            "name": "apple",
+            "children": [
+                { "name": "iphone", "val": 1000 },
+                { "name": "mac", "val": 1000 }
+            ]
+        },
+        {
+            "name": "MS",
+            "children": [
+                { "name": "hotmail", "val": 1000 },
+                { "name": "hotmail", "val": 1000 },
+                { "name": "hotmail", "val": 1000 },
+                { "name": "Windows", "val": 1000 }
+            ]
+        },
+        {
+            "name": "Facebook",
+            "children": [
+                { "name": "timeline", "val": 1000 },
+                { "name": "timeline", "val": 1000 },
+                { "name": "messanger", "val": 1000 }
+            ]
+        }
+        ]
+    }, 
+    {
+        "name": "CTR",
+        "children": [
+        {
+            "name": "google",
+            "children": [
+                { "name": "drive", "val": 1000 },
+                { "name": "play", "val": 1000 },
+                { "name": "gmail", "val": 1000 },
+                { "name": "youtube", "val": 1000 },
+                { "name": "android", "val": 1000 },
+                { "name": "search", "val": 1000 }
+            ]
+        },
+        {
+            "name": "apple",
+            "children": [
+                { "name": "iphone", "val": 1000 },
+                { "name": "mac", "val": 1000 }
+            ]
+        },
+        {
+            "name": "MS",
+            "children": [
+                { "name": "hotmail", "val": 1000 },
+                { "name": "hotmail", "val": 1000 },
+                { "name": "hotmail", "val": 1000 },
+                { "name": "Windows", "val": 1000 },
+                { "name": "hotmail", "val": 1000 },
+                { "name": "hotmail", "val": 1000 },
+                { "name": "hotmail", "val": 1000 }
+            ]
+        },
+        {
+            "name": "Facebook",
+            "children": [
+                { "name": "timeline", "val": 1000 },
+                { "name": "timeline", "val": 1000 },
+                { "name": "messanger", "val": 1000 }
+            ]
+        }
+        ]
+    } 
+    ];
+}
