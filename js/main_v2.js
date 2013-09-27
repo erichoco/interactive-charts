@@ -56,7 +56,6 @@
         bar_charts.create_label(platform_name);
         bar_charts.create(plat_test_data[1], line_chart.chart_context, platform_name, data_type);
 
-
         var ad_pie_charts = new AdPieCharts();
         ad_pie_charts.create(ad_test_data[1], line_chart.chart_context, ad_cat_name, 3);
 
