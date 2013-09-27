@@ -60,6 +60,11 @@
         var ad_pie_charts = new AdPieCharts();
         ad_pie_charts.create(ad_test_data[1], line_chart.chart_context, ad_cat_name, 3);
 
+        var app_pie_charts = new AppPieCharts();
+        var app_data = appPieData();
+        console.log(app_data);
+        app_pie_charts.create(app_data);
+
 
         /*slider.set_current('next');
         slider.transition();*/
