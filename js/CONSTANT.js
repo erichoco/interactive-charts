@@ -7,4 +7,5 @@ var TYPE_NAME = {
 var COLOR_SCHEME = {
     'platform': ['#5E5E5E', '#5ab5df', '#A4D247'],
     'ad_cat': ['#5E5E5E'],
+    'app_cat': ['#5E5E5E']
 }
