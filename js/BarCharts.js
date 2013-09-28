@@ -31,15 +31,6 @@ function BarCharts() {
             }
         };
 
-        var text_fnt = function(d) {
-            if (d % 1 !== 0) {
-                return d.toFixed(2) + '%';
-            }
-            else {
-                return d;
-            }
-        };
-
         var event_obj = {
             'mouseover': function(d, i) {
                 if (d % 1 === 0 && i !== 0) {
@@ -59,8 +50,6 @@ function BarCharts() {
             },
             'click': function(d, i) {
                 var $this_bar = $(this);
-
-                console.log(cur_context['type']);
 
                 if ($this_bar.attr('name') !== cur_context['type']) {
                     $this_bar.parent().parent()
@@ -90,7 +79,7 @@ function BarCharts() {
                         return width_fnt(d, i);
                     })
                     .text(function(d) {
-                        return text_fnt(d);
+                        return type_value_text(d);
                     });
 
         // create new element as needed
@@ -114,11 +103,12 @@ function BarCharts() {
                 })
                 .on(event_obj)
                 .transition()
+                    .duration(500)
                     .style('width', function(d, i) {
                         return width_fnt(d, i);
                     })
                     .text(function(d) {
-                        return text_fnt(d);
+                        return type_value_text(d);
                     });
 
         horiz_bars.exit().remove();

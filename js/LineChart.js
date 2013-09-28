@@ -62,6 +62,18 @@ function LineChart() {
     }
 
     /*
+     * Return the desired color of a line or dot.
+     * base_value_idx: determine which base_value in the context
+     */
+    var set_color = function(this_obj, base_value_idx) {
+
+        var this_context = this_obj.chart_context;
+        var this_col_scheme = COLOR_SCHEME[this_context['base']];
+        var color = this_col_scheme[this_context['base_value'][base_value_idx]];
+        return color;
+    }
+
+    /*
      * Add tooltip to dots of the chart
      * refer to static/js/report_js/report_picture.js by Cathy
      */
@@ -172,6 +184,7 @@ function LineChart() {
         return data_pairs_set;
 
         function update_domain(data) {
+
             if (st_date) {
                 st_date = (data['data_time'] < st_date)? data['data_time']
                                                        : st_date;
@@ -206,6 +219,7 @@ function LineChart() {
 
     var update_line_dot = function(this_obj, data_pairs_set) {
 
+        var exist_color, enter_color;
         // Join new data to lines
         var type_lines = chart_svg.selectAll('.type-line')
                             .data(data_pairs_set);
@@ -213,42 +227,49 @@ function LineChart() {
         // Translate existing lines translate
         type_lines.select('path')
                 .transition()
-                .attr('d', line);
+                .attr('d', line)
+                .style('stroke', function(d, i) {
+                    return set_color(this_obj, i);
+                });
 
         // Add New line(data pairs)
         var new_lines = type_lines.enter()
-                            .append('g')
-                                .attr('class', 'type-line')
-                            .append('svg:path')
-                                .attr('class', function(d, i) {
-                                    var base_value = this_obj.chart_context['base_value'];
-                                    return 'path-line ' + platform_class_name[base_value[i]];
-                                })
-                                .transition()
-                                .attr('d', line);
+                .append('g')
+                    .attr('class', 'type-line')
+                .append('svg:path')
+                    .attr('class', function(d, i) {
+
+                        var base_value = this_obj.chart_context['base_value'];
+                        return 'path-line';
+                    })
+                    .transition()
+                    .attr('d', line)
+                    .style('stroke', function(d, i) {
+                        return set_color(this_obj, i);
+                    });
+
         // Remove redundant lines
         type_lines.exit().remove();
+
 
         // Join new data to dots
         var dots = type_lines.selectAll('circle')
                 .data(function(d) {
                     return d;
-                    //return d3.select(this.parentNode).datum();
                 });
 
         dots.transition()
             .attr('cx', line.x())
-            .attr('cy', line.y());
+            .attr('cy', line.y())
+            .style('fill', function(d, i, j) {
+                return set_color(this_obj, j);
+            });
 
-        dots.enter()
+        var new_dots = dots.enter()
             .append('svg:circle')
-            .attr('class', function(d, i) {
-                var line_class = d3.select(this.parentNode.childNodes[0]).attr('class');
-                for (var i = 0; i < platform_class_name.length; i++) {
-                    if (line_class.match(platform_class_name[i])) {
-                        return 'dot ' + platform_class_name[i];
-                    }
-                }
+            .attr('class', 'dot')
+            .style('fill', function(d, i, j) {
+                return set_color(this_obj, j);
             })
             .attr('cx', line.x())
             .attr('cy', line.y())
@@ -302,7 +323,6 @@ function LineChart() {
 
     this.update = function() {
         var data_pairs_set = set_background(this, this.chart_data);
-        //console.log(data_pair);
 
         chart_svg.select('.x')
                 .call(axis['x'])
