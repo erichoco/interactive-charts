@@ -150,38 +150,90 @@ function LineChart() {
         }
     }
 
+
+    var updateDomain = function(datum, type, domain) {
+        var newDomain = {
+            "start": (datum.time < domain.start)? datum.time
+                                                : domain.start,
+            "end": (datum.time > domain.end)? datum.time
+                                            : domain.end,
+            "min": (datum.data[type].val < domain.min)? 
+                                            datum.data[type].val
+                                          : domain.min,
+            "max": (datum.data[type].val > domain.max)? 
+                                            datum.data[type].val
+                                          : domain.max,
+        };/*
+        newDomain.start = (datum.time < domain.start)? datum.time
+                                                     : domain.start;
+        newDomain.end = (datum.time > domain.end)? datum.time
+                                                 : domain.end;
+        newDomain.min = (datum.data[type].val < domain.min)? 
+                                                    datum.data[type].val
+                                                  : domain.min;
+        newDomain.max = (datum.data[type].val > domain.max)? 
+                                                    datum.data[type].val
+                                                  : domain.max;
+*/
+        return newDomain;
+    }
+
     /*
      * Return x, y values set for the line chart.
      * Config axes by the way.
      */
-    var set_background = function(this_obj, raw_data) {
-        var data_pairs_set = [];
-        var st_date, ed_date;
-        var min_val, max_val;
 
-        for (var i = 0; i < this_obj.chart_context['base_value'].length; i++) {
-            var data_pairs = new Array();
-            //var data = input_set[i];
+     // TODO: Parse all the data beforehand or parse when line added(prefered).
 
-            for (var j = 0; j < raw_data.length; j++) {
-                var cur_data = raw_data[j];
-                var pair = [];
+    var set_background = function(this_obj, dataset) {
 
-                if (cur_data[this_obj.chart_context['base']] === this_obj.chart_context['base_value'][i]) {
-                    pair[0] = cur_data['data_time'];
-                    pair[1] = cur_data[this_obj.chart_context['type']];
-                    data_pairs.push(pair);
+        //var dataset = jsonObj.dataset;
 
-                    update_domain(cur_data);
-                }
-            }
-
-            config_axes([st_date, ed_date], [0, max_val]); // set min val = 0 temperarily
-
-            data_pairs_set[i] = data_pairs;
+        var domain = {
+            'start': dataset[0].time,
+            'end': dataset[0].time,
+            'min': 0,
+            'max': 0
         };
 
-        return data_pairs_set;
+        var lines = new Array();
+
+        //for (var i = 0; i < this_obj.chart_context['cat'].length; i++) {
+
+            //var line = new Array();
+        for (var i = 0; i < this_obj.chart_context.cat.length; i++) {
+            lines.push(new Array());
+        }
+
+        for (var j = 0; j < dataset.length; j++) {
+
+            var curData = dataset[j];
+            console.log(j, curData);
+            console.log(lines.length);
+
+            var coord = [curData.time, curData.data[this_obj.chart_context.type].val];
+
+            lines[curData.cat].push(coord);
+
+            var domain = updateDomain(curData, this_obj.chart_context.type, domain);
+                /*
+                if (cur_data.cat === this_obj.chart_context['cat'][i]) {
+                    pair[0] = cur_data.time;
+                    pair[1] = cur_data.data[this_obj.chart_context.type];
+                    lines[].push(pair);
+                    }
+                */
+                //update_domain(cur_data);
+
+        }
+
+        config_axes([domain.start, domain.end], [domain.min, domain.max]); // set min val = 0 temperarily
+
+        //data_pairs_set[i] = data_pairs;
+        //};
+
+        return lines;
+
 
         function update_domain(data) {
 
@@ -294,10 +346,11 @@ function LineChart() {
     this.chart_data = [];
     this.chart_context = {};
 
-    this.create = function(raw_data, context) {
-        this.chart_data = raw_data;
+    this.create = function(jsonObj, context) {
+        this.chart_data = jsonObj;
         this.chart_context = context;
-        var data_pairs_set = set_background(this, raw_data);
+        var lines = set_background(this, jsonObj);
+        console.log(lines);
 
         /* Creating real svg elements & binding data */
         chart_svg = chart.append('svg')
@@ -318,7 +371,7 @@ function LineChart() {
                 .attr('class', 'y axis')
                 .call(axis['y']);
 
-        update_line_dot(this, data_pairs_set);
+        update_line_dot(this, lines);
     }
 
     this.update = function() {

@@ -4,21 +4,24 @@
         var ad_cat_name = ['Category 1', 'Category 2', 'Category 3', 'Category 4', 'Category 5', 'Category 6'];
         var data_type = ['Impressions', 'Clicks', 'CTR'];
 
+        console.log(genJson('daily', 0));
+        var json = genJson('daily', 0);
+
         var plat_test_data = gen_fake_data('daily', 'platform');
         var ad_test_data = gen_fake_data('daily', 'ad_cat');
         var app_test_data = gen_fake_data('daily', 'app_cat');
 
         // Default context
         var chart_context = {
-            unit: 'daily',
-            type: 'impression', // impression | click | ctr
-            base: 'platform',   // platform | app | ad
-            base_value: [0]     // must correspond to the order of dataset passed to LineChart obj
+            'unit': json.unit,
+            'type': 0, // impression | click | ctr
+            'group': json.group,   // platform | app | ad
+            'cat': [0]     // must correspond to the order of dataset passed to LineChart obj
         }
 
         var line_chart;        // shared line chart
         line_chart = new LineChart();
-        line_chart.create(plat_test_data[1], chart_context);
+        line_chart.create(json.dataset, chart_context);
         init_line_chart_var(line_chart);
 
 

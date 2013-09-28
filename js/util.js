@@ -82,6 +82,74 @@ function gen_fake_data(time_u, data_base) {
 }
 
 
+function genJson(unit, group) {
+
+    var thisGroup = GROUP[group];
+
+    var base_value = {
+        'platform': 3,
+        'ad_cat': 7,
+        'app_cat': 12
+    };
+
+    var dataset = new Array();
+    var imp, click, ctr,
+        total_imp, total_click, total_ctr;
+
+    var range = Math.random()*100 + 3;
+    for (var i = 0, month = 0; i < range; i++) {
+        if ((i % 25) === 0) {
+            month++;
+        }
+
+        total_imp = 0,
+        total_click = 0;
+
+        for (var j = 0; j < thisGroup.cat.length; j++) {
+            imp = Math.floor(Math.random()*2000 + 30);
+            click = Math.floor(Math.random()*30);
+            ctr = click / imp * 100;
+
+            total_imp += imp;
+            total_click += click;
+
+            var data = {
+                "time": new Date(2012, month - 1, (i % 25 + 1)),
+                "data": [
+                    { "type": TYPE[0], "val": imp },
+                    { "type": TYPE[1], "val": click },
+                    { "type": TYPE[2], "val": ctr },
+                ],
+                "cat": j
+            }
+
+            dataset.push(data);
+        }
+
+        total_ctr = total_click / total_imp * 100;
+        var data = {
+            "time": new Date(2012, month - 1, (i % 25 + 1)),
+            "data": [
+                { "type": TYPE[0], "val": total_imp },
+                { "type": TYPE[1], "val": total_click },
+                { "type": TYPE[2], "val": total_ctr },
+            ],
+            "cat": 0
+        }
+
+        dataset.push(data);
+    }
+
+    var json = {
+        "unit": unit,
+        "group": thisGroup.name,
+        "dataset": dataset
+    }
+
+    return json;
+}
+
+
 function prepare_data(raw_data, base) {
 
     var base_value = {
@@ -125,6 +193,7 @@ function prepare_data(raw_data, base) {
     console.log('prepared data', dataset);
     return dataset;//[dataset['impression'], dataset['click'], dataset['ctr']];
 }
+
 
 function appPieData() {
     return [
