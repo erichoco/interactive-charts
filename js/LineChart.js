@@ -188,7 +188,6 @@ function LineChart() {
                     .transition()
                     .attr('d', line)
                     .style('stroke', function(d, i) {
-                        console.log(d, i, colors);
                         return colors[context.cat[i]];
                     });
 
@@ -241,7 +240,7 @@ function LineChart() {
     this.create = function(dataset, context) {
         this.dataset = dataset;
         this.context = context;
-        colors = GROUP[context.group].color;
+        colors = BASE[context.base].color;
 
         var lines = getLineData(dataset, context);
 

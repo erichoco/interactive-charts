@@ -124,9 +124,9 @@ function gen_fake_data(time_u, data_base) {
 }
 
 
-function genJson(unit, group) {
+function genJson(unit, base) {
 
-    var thisGroup = GROUP[group];
+    var thisBase = BASE[base];
 
     var dataset = new Array();
     var imp, click, ctr,
@@ -141,7 +141,7 @@ function genJson(unit, group) {
         total_imp = 0,
         total_click = 0;
 
-        for (var j = 0; j < thisGroup.cat.length; j++) {
+        for (var j = 1; j < thisBase.cat.length; j++) {
             imp = Math.floor(Math.random()*2000 + 30);
             click = Math.floor(Math.random()*30);
             ctr = click / imp * 100;
@@ -156,7 +156,7 @@ function genJson(unit, group) {
                     { "type": 1, "val": click },
                     { "type": 2, "val": ctr },
                 ],
-                "cat": j + 1
+                "cat": j
             }
 
             dataset.push(data);
@@ -178,7 +178,7 @@ function genJson(unit, group) {
 
     var json = {
         "unit": unit,
-        "group": group,
+        "base": base,
         "dataset": dataset
     }
 
@@ -186,48 +186,77 @@ function genJson(unit, group) {
 }
 
 
-function prepare_data(raw_data, base) {
+function prepareData(dataset, base) {
 
-    var base_value = {
-        'platform': 3,
-        'ad_cat': 7,
-        'app_cat': 12
-    };
+    // Initially set up return object.
+    var donutDataset = new Array();
+    var data = new Array();
+    var total = new Array();
 
-    var dataset = {
-        'impression': new Array,
-        'click': new Array,
-        'ctr': new Array
-    };
+    for (var i = 0; i < TYPE.length; i++) {
+        data[i] = new Array();
+        total[i] = 0;
+    }
 
-    for (var i = 0; i < base_value[base]; i++) {
-        for (k in dataset) {
-            dataset[k].push(0);
+    console.log(data);
+
+    // Extract total data.
+    for (var i = 0; i < dataset.length; i++) {
+        if (0 === dataset[i].cat) {
+            for (var j = 0; j < dataset[i].data.length - 1; j++) {
+                var curData = dataset[i].data[j];
+                total[curData.type] += curData.val;
+            }
+
+            // Skip sum in the previous loop for CTR.
+            // Recalculate here.
+            total[2] = total[1] / total[0] * 100;
         }
     }
 
-    for (var i = 0; i < raw_data.length; i++) {
-        var cur_data = raw_data[i];
-/*
-        if ('platform' in cur_data) {
-            dataset['impression'][cur_data['platform']] += cur_data['impression'];
-            dataset['click'][cur_data['platform']] += cur_data['click'];
-        }
-        else {
-            alert("DEBUG: 'platform' key not found");
-        }
-        */
+    // Extract other categories of data.
+    // Start i at 1 in order to skip total data (whose cat = 0).
+    for (var i = 1; i < BASE[base].cat.length; i++) {
 
-        dataset['impression'][cur_data[base]] += cur_data['impression'];
-        dataset['click'][cur_data[base]] += cur_data['click'];
+        // Initial data and value sets for different types in same cat.
+        var val = new Array();
+        for (var j = 0; j < TYPE.length; j++) {
+            val[j] = 0;
+        }
+
+        for (var j = 0; j < dataset.length; j++) {
+
+            if (dataset[j].cat !== i) { continue; }
+
+            // Sum value of the same type in same cat. (skip type = CTR)
+            for (var k = 0; k < dataset[j].data.length - 1; k++) {
+                var curData = dataset[j].data[k];
+                // Handle CTR
+                val[curData.type] += curData.val;
+            }
+        }
+
+        val[2] = val[1] / val[0] * 100;
+
+        for (var j = 0; j < TYPE.length; j++) {
+            //data[j].push({});
+            data[j].push({
+                "cat": BASE[base].cat[i],
+                "val": val[j]
+            });
+        }
     }
 
-    for (var i = 0; i < dataset['ctr'].length; i++) {
-        dataset['ctr'][i] = dataset['click'][i] / dataset['impression'][i] * 100;
+    for (var i = 0; i < TYPE.length; i++) {
+        donutDataset.push({
+            "type": TYPE[i],
+            "unit": TYPE_UNIT[i],
+            "data": data[i],
+            "total": total[i]
+        });
     }
 
-    console.log('prepared data', dataset);
-    return dataset;//[dataset['impression'], dataset['click'], dataset['ctr']];
+    return donutDataset;
 }
 
 

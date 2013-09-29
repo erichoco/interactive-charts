@@ -1,13 +1,16 @@
 var TYPE = ['Impressions', 'Clicks', 'CTR'];
 
+var TYPE_UNIT = ['', '', '%'];
 
-var GROUP = [ {
+
+var BASE = [ {
         'name': 'platform',
-        'cat': ['iOS', 'Android'],
+        'cat': ['Total', 'iOS', 'Android'],
         'color': ['#5E5E5E', '#5ab5df', '#A4D247']
     }, {
         'name': 'ad', 
         'cat': [
+            'Total',
             'Category 1',
             'Category 2',
             'Category 3',
@@ -18,6 +21,7 @@ var GROUP = [ {
     }, {
         'name': 'app', 
         'cat': [
+            'Total',
             'App 1',
             'App 2',
             'App 3',

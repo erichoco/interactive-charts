@@ -6,7 +6,6 @@
 
         var jsonSet = new Array();
         for (var i = 0; i < 3; i++) {
-            console.log(i);
             jsonSet.push(genJson('daily', i));
         };
 
@@ -18,7 +17,7 @@
         var chart_context = {
             'unit': jsonSet[0].unit,
             'type': 0, // impression | click | ctr
-            'group': jsonSet[0].group,   // platform | app | ad
+            'base': jsonSet[0].base,   // platform | app | ad
             'cat': [0]     // must correspond to the order of dataset passed to LineChart obj
         }
 
@@ -54,11 +53,13 @@
 
             line_chart.chart_data = data[1];*/
 
-            chart_context.group = slider.current;
+            chart_context.base = slider.current;
             line_chart.update(jsonSet[slider.current].dataset, chart_context);
         });
 
+        //console.log('donut data', prepareData(jsonSet[1].dataset, 1));
         var donuts = new DonutCharts();
+        donuts.create(prepareData(jsonSet[1].dataset, 1));
 
 
         var bar_charts = new BarCharts();
