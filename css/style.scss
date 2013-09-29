@@ -95,7 +95,7 @@ body {
     }
 }
 
-.path-line{
+.line path {
     fill: none;
     stroke: $tol_color;
     stroke-width: 1.5px;
@@ -114,9 +114,8 @@ body {
     }
 }
 
-#ring {
+.ring {
     fill: none;
-    stroke: #D0D0D0;
     stroke-width: 4px;
 }
 

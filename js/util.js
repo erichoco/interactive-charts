@@ -21,6 +21,48 @@ function type_value_text(d) {
     }
 };
 
+function valToText(d) {
+    // Add % for CTR
+    if (d % 1 !== 0) {
+        return d.toFixed(2) + '%';
+    }
+    else {
+        return d;
+    }
+};
+
+function formatDateObj(date, unit) {
+    var year = date.getFullYear();
+    var mon = date.getMonth() + 1;
+    var day = date.getDate();
+    var hour = date.getHours();
+
+    if (hour < 10)
+        hour = '0'+ hour.toString();
+
+    if (unit === 'weekly' || unit === 'daily') {
+        return year + '/' + mon + '/' + day;
+    } else if (unit === 'monthly') {
+        return year + '/' + mon;
+    } else if (unit === 'hourly') {
+        return mon + '/' + day + " " + hour;
+    } else {
+        console.error('Time unit error');
+    }
+}
+
+function createTooltip(top, left, id, content, color) {
+    $('<div id="' + id + '">' + content + '</div>').css({
+        'padding': '2px',
+        'position': 'absolute',
+        'display': 'none',
+        'top': top - 25 + 'px',
+        'left': left + 10 + 'px',
+        'border': '1px solid #A9A9A9',
+        'background-color': '#FFFFCC',
+        'opacity': '0.8'
+    }).appendTo('#line-chart').fadeIn(100);
+}
 
 function gen_fake_data(time_u, data_base) {
 
@@ -86,12 +128,6 @@ function genJson(unit, group) {
 
     var thisGroup = GROUP[group];
 
-    var base_value = {
-        'platform': 3,
-        'ad_cat': 7,
-        'app_cat': 12
-    };
-
     var dataset = new Array();
     var imp, click, ctr,
         total_imp, total_click, total_ctr;
@@ -120,7 +156,7 @@ function genJson(unit, group) {
                     { "type": 1, "val": click },
                     { "type": 2, "val": ctr },
                 ],
-                "cat": j
+                "cat": j + 1
             }
 
             dataset.push(data);

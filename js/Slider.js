@@ -19,7 +19,7 @@ Slider.prototype.transition = function(coords) {
     });
 };
 
-Slider.prototype.set_current = function(dir) {
+Slider.prototype.setCurrent = function(dir) {
     var pos = this.current;
     pos += (~~(dir === 'next') || -1);
     console.log(this.chart_len);
