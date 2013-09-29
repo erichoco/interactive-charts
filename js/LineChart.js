@@ -20,6 +20,8 @@ function LineChart() {
 
     var platform_class_name = ['tol-bg', 'ios-bg', 'and-bg'];
 
+    var colors;
+
     /* Preperation functions for drawing line */
     // default scale value, will be overwritten later on
     var scale = {
@@ -42,12 +44,11 @@ function LineChart() {
     }
     var line = d3.svg.line()
                 .interpolate('linear')
-                //.transition()
                 .x(function(d) {
                     return scale['x'](d[0]);
                 })
                 .y(function(d) {
-                    return scale['y'](d[1]);
+                    return scale['y'](d[1].val);
                 });
     /* End of preperation functions for drawing line */
 
@@ -67,7 +68,7 @@ function LineChart() {
      */
     var set_color = function(this_obj, base_value_idx) {
 
-        var this_context = this_obj.chart_context;
+        var this_context = this_obj.context;
         var this_col_scheme = COLOR_SCHEME[this_context['base']];
         var color = this_col_scheme[this_context['base_value'][base_value_idx]];
         return color;
@@ -163,31 +164,16 @@ function LineChart() {
             "max": (datum.data[type].val > domain.max)? 
                                             datum.data[type].val
                                           : domain.max,
-        };/*
-        newDomain.start = (datum.time < domain.start)? datum.time
-                                                     : domain.start;
-        newDomain.end = (datum.time > domain.end)? datum.time
-                                                 : domain.end;
-        newDomain.min = (datum.data[type].val < domain.min)? 
-                                                    datum.data[type].val
-                                                  : domain.min;
-        newDomain.max = (datum.data[type].val > domain.max)? 
-                                                    datum.data[type].val
-                                                  : domain.max;
-*/
+        };
         return newDomain;
     }
 
     /*
-     * Return x, y values set for the line chart.
-     * Config axes by the way.
+     * Return a set of lines for the line chart, where the number of lines equals
+     * to the number of cat in the context.
+     * Each line contains a set of coordinates.
      */
-
-     // TODO: Parse all the data beforehand or parse when line added(prefered).
-
-    var set_background = function(this_obj, dataset) {
-
-        //var dataset = jsonObj.dataset;
+    var set_background = function(dataset, context) {
 
         var domain = {
             'start': dataset[0].time,
@@ -201,36 +187,27 @@ function LineChart() {
         //for (var i = 0; i < this_obj.chart_context['cat'].length; i++) {
 
             //var line = new Array();
-        for (var i = 0; i < this_obj.chart_context.cat.length; i++) {
+        for (var i = 0; i < context.cat.length; i++) {
             lines.push(new Array());
         }
 
-        for (var j = 0; j < dataset.length; j++) {
+        for (var i = 0; i < context.cat.length; i++) {
 
-            var curData = dataset[j];
-            console.log(j, curData);
-            console.log(lines.length);
+            for (var j = 0; j < dataset.length; j++) {
 
-            var coord = [curData.time, curData.data[this_obj.chart_context.type].val];
+                var curData = dataset[j];
 
-            lines[curData.cat].push(coord);
+                if (curData.cat !== context.cat[i]) { continue; }
 
-            var domain = updateDomain(curData, this_obj.chart_context.type, domain);
-                /*
-                if (cur_data.cat === this_obj.chart_context['cat'][i]) {
-                    pair[0] = cur_data.time;
-                    pair[1] = cur_data.data[this_obj.chart_context.type];
-                    lines[].push(pair);
-                    }
-                */
-                //update_domain(cur_data);
+                var coord = [curData.time, curData.data[context.type]];
 
+                lines[i].push(coord);
+
+                domain = updateDomain(curData, context.type, domain);
+            }
         }
 
-        config_axes([domain.start, domain.end], [domain.min, domain.max]); // set min val = 0 temperarily
-
-        //data_pairs_set[i] = data_pairs;
-        //};
+        config_axes([domain.start, domain.end], [domain.min, domain.max]);
 
         return lines;
 
@@ -269,35 +246,34 @@ function LineChart() {
         }
     }
 
-    var update_line_dot = function(this_obj, data_pairs_set) {
+    var update_line_dot = function(this_obj, lines) {
 
         var exist_color, enter_color;
         // Join new data to lines
-        var type_lines = chart_svg.selectAll('.type-line')
-                            .data(data_pairs_set);
+        var type_lines = chart_svg.selectAll('.line')
+                            .data(lines);
 
         // Translate existing lines translate
         type_lines.select('path')
                 .transition()
                 .attr('d', line)
                 .style('stroke', function(d, i) {
-                    return set_color(this_obj, i);
+                    return colors[this_obj.context.cat[i]];
                 });
 
         // Add New line(data pairs)
         var new_lines = type_lines.enter()
                 .append('g')
-                    .attr('class', 'type-line')
+                    .attr('class', 'line')
                 .append('svg:path')
                     .attr('class', function(d, i) {
-
                         var base_value = this_obj.chart_context['base_value'];
                         return 'path-line';
                     })
                     .transition()
                     .attr('d', line)
                     .style('stroke', function(d, i) {
-                        return set_color(this_obj, i);
+                        return colors[this_obj.context.cat[i]];
                     });
 
         // Remove redundant lines
@@ -345,16 +321,19 @@ function LineChart() {
     // the type and context of line svg chart presenting
     this.chart_data = [];
     this.chart_context = {};
+    this.context = {};
 
-    this.create = function(jsonObj, context) {
-        this.chart_data = jsonObj;
+    this.create = function(dataset, context) {
+        this.chart_data = dataset;
         this.chart_context = context;
-        var lines = set_background(this, jsonObj);
+        this.context = context;
+        colors = context.group.color;
+
+        var lines = set_background(dataset, context);
         console.log(lines);
 
         /* Creating real svg elements & binding data */
         chart_svg = chart.append('svg')
-                        //.data([data_pair])
                         .attr('width', chart_w + chart_m.left + chart_m.right)
                         .attr('height', chart_w + chart_m.top + chart_m.bottom)
                         .append('svg:g')

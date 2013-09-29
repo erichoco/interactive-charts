@@ -116,9 +116,9 @@ function genJson(unit, group) {
             var data = {
                 "time": new Date(2012, month - 1, (i % 25 + 1)),
                 "data": [
-                    { "type": TYPE[0], "val": imp },
-                    { "type": TYPE[1], "val": click },
-                    { "type": TYPE[2], "val": ctr },
+                    { "type": 0, "val": imp },
+                    { "type": 1, "val": click },
+                    { "type": 2, "val": ctr },
                 ],
                 "cat": j
             }
@@ -130,9 +130,9 @@ function genJson(unit, group) {
         var data = {
             "time": new Date(2012, month - 1, (i % 25 + 1)),
             "data": [
-                { "type": TYPE[0], "val": total_imp },
-                { "type": TYPE[1], "val": total_click },
-                { "type": TYPE[2], "val": total_ctr },
+                { "type": 0, "val": total_imp },
+                { "type": 1, "val": total_click },
+                { "type": 2, "val": total_ctr },
             ],
             "cat": 0
         }
@@ -142,7 +142,7 @@ function genJson(unit, group) {
 
     var json = {
         "unit": unit,
-        "group": thisGroup.name,
+        "group": group,
         "dataset": dataset
     }
 
