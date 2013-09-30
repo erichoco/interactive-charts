@@ -199,8 +199,6 @@ function prepareData(dataset, base) {
         total[i] = 0;
     }
 
-    console.log(data);
-
     // Extract total data.
     for (var i = 0; i < dataset.length; i++) {
         if (0 === dataset[i].cat) {

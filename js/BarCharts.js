@@ -3,6 +3,7 @@ function BarCharts() {
      * private members *
      *******************/
     var base = 0;
+
     var charts = d3.select('#bar-charts');
     var sub_charts = [];
     // dimension of a single chart
@@ -12,6 +13,30 @@ function BarCharts() {
     var clicked_class_name = ['tol-clicked', 'ios-clicked', 'and-clicked'];
 
     var cur_context = {};
+
+    var createLegend = function() {
+        var legends = charts.select('.legend')
+                        .selectAll('g')
+                            .data(BASE[base].cat.slice(1, BASE[base].cat.length))
+                        .enter().append('g')
+                            .attr('transform', function(d, i) {
+                                return 'translate(' + (i * 150 + 50) + ', 10)';
+                            });
+
+        legends.append('circle')
+            .attr('class', 'legend-icon')
+            .attr('r', 6)
+            .style('fill', function(d, i) {
+                return BASE[base].color[i + 1];
+            });
+
+        legends.append('text')
+            .attr('dx', '1em')
+            .attr('dy', '.3em')
+            .text(function(d) {
+                return d;
+            });
+    }
 
     /*
      * Update/Add bars in a sub-chart
@@ -148,6 +173,17 @@ function BarCharts() {
         return dataset;
     }
 
+    var updateBars = function() {
+        var horizBar = d3.selectAll('.bars')
+                            .selectAll('.horiz-bar')
+                            .data(function(d) {
+                                return d.data;
+                            });
+
+        horizBar.enter().append('div')
+
+    }
+
 
     /******************
      * public members *
@@ -155,7 +191,33 @@ function BarCharts() {
     this.create = function(dataset, context, platform_name, data_type_name) {        //var dataset = set_background(raw_data);
         cur_context = context;
 
-        var i = 0;
+        charts.append('svg')
+            .attr('class', 'legend')
+            .attr('width', '100%')
+            .attr('height', 50)
+            .attr('transform', 'translate(0, -100)');
+
+        var barWrappers = charts.selectAll('.bars-wrapper')
+                            .data(dataset)
+                        .enter().append('div')
+                            .attr('class', 'bars-wrapper')
+
+        barWrappers.append('p')
+            .attr('class', 'bars-title')
+            .text(function(d) {
+                return TYPE[d.type];
+            });
+
+        barWrappers.append('div')
+            .attr('class', 'bars')
+            .style('width', chart_w + 'px')
+            .style('height', chart_h + 'px');
+
+        createLegend();
+
+        console.log(d3.selectAll('.bars').data());
+        updateBars();
+        /*var i = 0;
         for (var k in dataset) {
             var chart_wrapper = charts.append('div')
                                     .attr('class', 'chart-wrapper');
@@ -175,7 +237,7 @@ function BarCharts() {
         for (var k in dataset) {
             var horiz_bars = update_bars(sub_charts[i++], dataset[k]);
             horiz_bars.attr('name', k);
-        }
+        }*/
     }
 
     this.update = function(new_raw_data, new_context) {

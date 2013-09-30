@@ -59,7 +59,7 @@
 
 
         var bar_charts = new BarCharts();
-        bar_charts.create_label(platform_name);
+        //bar_charts.create_label(platform_name);
         bar_charts.create(prepareData(jsonSet[0].dataset, 0), line_chart.chart_context, platform_name, data_type);
 
 

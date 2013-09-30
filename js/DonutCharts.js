@@ -6,7 +6,7 @@ function DonutCharts() {
     var chart_m,
         chart_r,
         color = d3.scale.category20();
-
+/*
     var getCatNames = function(dataset) {
         var catNames = new Array();
 
@@ -16,7 +16,7 @@ function DonutCharts() {
 
         return catNames;
     }
-
+*/
     var unclickAllPath = function() {
         var paths = charts.selectAll('.clicked');
         pathAnim(paths, 0);
@@ -24,10 +24,10 @@ function DonutCharts() {
         resetAllCenterText();
     }
 
-    var createLegend = function(catNames) {
+    var createLegend = function() {
         var legends = charts.select('.legend')
                         .selectAll('g')
-                            .data(catNames)
+                            .data(BASE[base].cat.slice(1, BASE[base].cat.length))
                         .enter().append('g')
                             .attr('transform', function(d, i) {
                                 return 'translate(' + (i * 150 + 50) + ', 10)';
@@ -257,7 +257,7 @@ function DonutCharts() {
                         })
                         .attr('transform', 'translate(' + (chart_r+chart_m) + ',' + (chart_r+chart_m) + ')');
 
-        createLegend(getCatNames(dataset));
+        createLegend();
         createCenter();
 
         updateDonut();
