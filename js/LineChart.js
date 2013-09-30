@@ -74,11 +74,7 @@ function LineChart() {
         var color = colors[context.cat[j]];
 
         if (show && !$('.tooltip').length) {
-            var data_type_name = {
-                'impression': 'Impressions',
-                'click': 'Clicks',
-                'ctr': 'CTR'
-            }
+
             var content = formatDateObj(data[0], context.unit) + ' ' +
                                   TYPE[data[1].type] + ': ' +
                                   valToText(data[1].val);
@@ -291,10 +287,5 @@ function LineChart() {
                 .call(axis['y']);
 
         updateLines(lines, context);
-    }
-
-    this.reset_to_tol = function() {
-        this.chart_context['base_value'] = [0];
-        this.update();
     }
 };

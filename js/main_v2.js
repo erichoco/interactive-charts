@@ -15,15 +15,15 @@
 
         // Default context
         var chart_context = {
-            'unit': jsonSet[1].unit,
+            'unit': jsonSet[0].unit,
             'type': 0, // impression | click | ctr
-            'base': jsonSet[1].base,   // platform | app | ad
+            'base': jsonSet[0].base,   // platform | app | ad
             'cat': [0]     // must correspond to the order of dataset passed to LineChart obj
         }
 
         var line_chart;        // shared line chart
         line_chart = new LineChart();
-        line_chart.create(jsonSet[1].dataset, chart_context);
+        line_chart.create(jsonSet[0].dataset, chart_context);
         init_line_chart_var(line_chart);
 
 
@@ -57,19 +57,16 @@
             line_chart.update(jsonSet[slider.current].dataset, chart_context);
         });
 
-        //console.log('donut data', prepareData(jsonSet[1].dataset, 1));
-        var donuts = new DonutCharts();
-        donuts.create(prepareData(jsonSet[1].dataset, 1));
-
 
         var bar_charts = new BarCharts();
         bar_charts.create_label(platform_name);
-        bar_charts.create(plat_test_data[1], line_chart.chart_context, platform_name, data_type);
+        bar_charts.create(prepareData(jsonSet[0].dataset, 0), line_chart.chart_context, platform_name, data_type);
 
 
-/*        var ad_pie_charts = new AdPieCharts();
-        ad_pie_charts.create(ad_test_data[1], line_chart.chart_context, ad_cat_name, 3);
+        var donuts = new DonutCharts();
+        donuts.create(prepareData(jsonSet[1].dataset, 1));
 
+/*
         var app_pie_charts = new AppPieCharts();
         var app_data = appPieData();
         console.log(app_data);

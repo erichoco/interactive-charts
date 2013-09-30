@@ -51,6 +51,7 @@ function formatDateObj(date, unit) {
     }
 }
 
+
 function createTooltip(top, left, id, content, color) {
     $('<div id="' + id + '" class="tooltip">' + content + '</div>').css({
         'padding': '2px',

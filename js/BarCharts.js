@@ -2,6 +2,7 @@ function BarCharts() {
     /*******************
      * private members *
      *******************/
+    var base = 0;
     var charts = d3.select('#bar-charts');
     var sub_charts = [];
     // dimension of a single chart
@@ -151,8 +152,7 @@ function BarCharts() {
     /******************
      * public members *
      ******************/
-    this.create = function(raw_data, context, platform_name, data_type_name) {
-        var dataset = set_background(raw_data);
+    this.create = function(dataset, context, platform_name, data_type_name) {        //var dataset = set_background(raw_data);
         cur_context = context;
 
         var i = 0;
