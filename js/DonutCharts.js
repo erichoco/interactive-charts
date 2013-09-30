@@ -17,6 +17,13 @@ function DonutCharts() {
         return catNames;
     }
 
+    var unclickAllPath = function() {
+        var paths = charts.selectAll('.clicked');
+        pathAnim(paths, 0);
+        paths.classed('clicked', false);
+        resetAllCenterText();
+    }
+
     var createLegend = function(catNames) {
         var legends = charts.select('.legend')
                         .selectAll('g')
@@ -58,11 +65,9 @@ function DonutCharts() {
                     .attr("r", chart_r * 0.6);
             },
 
-            'click': function(d, i) {
-                var paths = charts.selectAll('.clicked');
-                pathAnim(paths, 0);
-                paths.classed('clicked', false);
-                resetAllCenterText();
+            'click': function(d, i, j) {
+                unclickAllPath();
+                updateLineContext(d.type, 0);
             }
         }
 
@@ -177,7 +182,7 @@ function DonutCharts() {
                 var thisDonut = charts.select('.type' + j);
 
                 if (0 === thisDonut.selectAll('.clicked')[0].length) {
-                    thisDonut.select('circle').on('click')();
+                    unclickAllPath();
                 }
 
                 var thisPath = d3.select(this);

@@ -52,7 +52,7 @@ function formatDateObj(date, unit) {
 }
 
 function createTooltip(top, left, id, content, color) {
-    $('<div id="' + id + '">' + content + '</div>').css({
+    $('<div id="' + id + '" class="tooltip">' + content + '</div>').css({
         'padding': '2px',
         'position': 'absolute',
         'display': 'none',
@@ -61,7 +61,7 @@ function createTooltip(top, left, id, content, color) {
         'border': '1px solid #A9A9A9',
         'background-color': '#FFFFCC',
         'opacity': '0.8'
-    }).appendTo('#line-chart').fadeIn(100);
+    }).appendTo('#line-chart').fadeIn(200);
 }
 
 function gen_fake_data(time_u, data_base) {

@@ -72,9 +72,8 @@ function LineChart() {
         var offset = $(el[0]).offset();
         var data = el.data()[0];
         var color = colors[context.cat[j]];
-        console.log(color);
 
-        if (show && !$('#tooltip').length) {
+        if (show && !$('.tooltip').length) {
             var data_type_name = {
                 'impression': 'Impressions',
                 'click': 'Clicks',
@@ -94,6 +93,7 @@ function LineChart() {
                 .style('stroke', color)
                 .style('opacity', 0.5)
                 .transition()
+                .duration(200)
                     .attr('r', 5);
         } else {
             $('#tooltip' + i).fadeOut(200, function() {
@@ -157,7 +157,6 @@ function LineChart() {
                 domain = updateDomain(curData, context.type, domain);
             }
         }
-
         configAxes([domain.start, domain.end], [domain.min, domain.max]);
 
         return lines;
@@ -282,6 +281,15 @@ function LineChart() {
     this.changeContext = function(context) {
         console.log(context);
         var lines = getLineData(this.dataset, context);
+
+        chart_svg.select('.x')
+                .call(axis['x'])
+                .selectAll('text')
+                    .style('text-anchor','end')
+                    .attr('transform','rotate(-45)');
+        chart_svg.select('.y')
+                .call(axis['y']);
+
         updateLines(lines, context);
     }
 

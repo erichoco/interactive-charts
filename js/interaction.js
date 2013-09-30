@@ -20,10 +20,8 @@ function updateLineContext(type, cat) {
     }
     
     newContext = updateCat(newContext, cat);
-    console.log('hey')
-    line_chart.changeContext(newContext);
 
-    //return line_chart.context;
+    line_chart.changeContext(newContext);
 }
 
 function updateCat(newContext, cat) {
