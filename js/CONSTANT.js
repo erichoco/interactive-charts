@@ -7,7 +7,8 @@ var TYPE_UNIT = ['', '', ''];
 var BASE = [ {
         'name': 'platform',
         'cat': ['Total', 'iOS', 'Android'],
-        'color': ['#5E5E5E', '#5ab5df', '#A4D247']
+        'color': ['#5E5E5E', '#5ab5df', '#A4D247'],
+        'stylingClass': ['tol-bg', 'ios-bg', 'and-bg']
     }, {
         'name': 'ad', 
         'cat': [

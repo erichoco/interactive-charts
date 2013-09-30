@@ -11,6 +11,24 @@ function get_percentage(data, dataset, round_place) {
     return Math.round(data * 100 * level / d3.sum(dataset)) / level;
 }
 
+
+/* 
+ * Returns the percentage of this element's data among the same type
+ */
+function getBarPer(thisEl) {
+    var thisData = d3.select(thisEl).data()[0];
+    var parData = d3.select(thisEl.parentNode).data()[0];
+
+    if (2 === parData.type) {
+        return 100*thisData.val/d3.sum(parData.data,
+            function(d) {
+                return d.val;
+            });
+    } else {
+        return 100*thisData.val/parData.total;
+    }
+}
+
 function type_value_text(d) {
     // Add % for CTR
     if (d % 1 !== 0) {
@@ -51,6 +69,29 @@ function formatDateObj(date, unit) {
     }
 }
 
+function createLegend(chart, base) {
+    var legends = chart.select('.legend')
+                .selectAll('g')
+                    .data(BASE[base].cat.slice(1, BASE[base].cat.length))
+                .enter().append('g')
+                    .attr('transform', function(d, i) {
+                        return 'translate(' + (i * 150 + 50) + ', 10)';
+                    });
+
+    legends.append('circle')
+        .attr('class', 'legend-icon')
+        .attr('r', 6)
+        .style('fill', function(d, i) {
+            return BASE[base].color[i + 1];
+        });
+
+    legends.append('text')
+        .attr('dx', '1em')
+        .attr('dy', '.3em')
+        .text(function(d) {
+            return d;
+        });
+}
 
 function createTooltip(top, left, id, content, color) {
     $('<div id="' + id + '" class="tooltip">' + content + '</div>').css({

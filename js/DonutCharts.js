@@ -6,17 +6,7 @@ function DonutCharts() {
     var chart_m,
         chart_r,
         color = d3.scale.category20();
-/*
-    var getCatNames = function(dataset) {
-        var catNames = new Array();
 
-        for (var i = 0; i < dataset[0].data.length; i++) {
-            catNames.push(BASE[base].cat[dataset[0].data[i].cat]);
-        }
-
-        return catNames;
-    }
-*/
     var unclickAllPath = function() {
         var paths = charts.selectAll('.clicked');
         pathAnim(paths, 0);
@@ -24,40 +14,16 @@ function DonutCharts() {
         resetAllCenterText();
     }
 
-    var createLegend = function() {
-        var legends = charts.select('.legend')
-                        .selectAll('g')
-                            .data(BASE[base].cat.slice(1, BASE[base].cat.length))
-                        .enter().append('g')
-                            .attr('transform', function(d, i) {
-                                return 'translate(' + (i * 150 + 50) + ', 10)';
-                            });
-
-        legends.append('circle')
-            .attr('class', 'legend-icon')
-            .attr('r', 6)
-            .style('fill', function(d, i) {
-                return color(i);
-            });
-
-        legends.append('text')
-            .attr('dx', '1em')
-            .attr('dy', '.3em')
-            .text(function(d) {
-                return d;
-            });
-    }
-
     var createCenter = function(pie) {
 
         var eventObj = {
-            'mouseover': function(d, i) {
+            'mouseover': function(d) {
                 d3.select(this)
                     .transition()
                     .attr("r", chart_r * 0.65);
             },
 
-            'mouseout': function(d, i) {
+            'mouseout': function(d) {
                 d3.select(this)
                     .transition()
                     .duration(500)
@@ -65,9 +31,10 @@ function DonutCharts() {
                     .attr("r", chart_r * 0.6);
             },
 
-            'click': function(d, i, j) {
+            'click': function(d) {
                 unclickAllPath();
                 updateLineContext(d.type, 0);
+                console.log('hey');
             }
         }
 
@@ -103,8 +70,7 @@ function DonutCharts() {
         var returnVal = function(d) {
                             return d.data.val;
                         };
-
-        if (2 !== TYPE[donutData.type]) {
+        if (2 !== donutData.type) {
             var val = d3.sum(clickedData, returnVal);
             var per = (val)? val/donutData.total*100
                            : '';
@@ -164,7 +130,7 @@ function DonutCharts() {
                     return valToText(d.data.val) + TYPE_UNIT[donut_d.type];
                 });
                 thisDonut.select('.percentage').text(function(donut_d, donut_i) {
-                    return (2 === TYPE[donut_d.type])? ''
+                    return (2 === donut_d.type)? ''
                                 : (d.data.val/donut_d.total*100).toFixed(2) + '%';
                 });
             },
@@ -211,7 +177,7 @@ function DonutCharts() {
         // Start joining data with paths
         var paths = charts.selectAll('.donut')
                         .selectAll('path')
-                        .data(function(d, i) {
+                        .data(function(d) {
                             return pie(d.data);
                         });
 
@@ -256,11 +222,9 @@ function DonutCharts() {
                             return 'donut type' + i;
                         })
                         .attr('transform', 'translate(' + (chart_r+chart_m) + ',' + (chart_r+chart_m) + ')');
-
-        createLegend();
         createCenter();
-
         updateDonut();
+        createLegend(charts, base);
     }
 
     this.update = function(dataset) {
@@ -269,5 +233,21 @@ function DonutCharts() {
                     .data(dataset);
 
         updateDonut();
+    }
+
+    this.changeType = function(type, cat) {
+
+        var donut = charts.select('.type' + type);
+        var paths = donut.selectAll('path');
+        if (1 === cat.length) {
+            console.log($(donut.select('circle')[0]));
+            $(donut.select('circle')[0]).click();
+        } else {
+            for (var j = 1; j < cat.length; j++) {
+                $(paths.filter(function(d) {
+                    return d.cat === cat[j];
+                })[0]).click();
+            }
+        }
     }
 }

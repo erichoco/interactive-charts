@@ -260,22 +260,11 @@ function LineChart() {
     }
 
     this.update = function(dataset, context) {
-        this.dataset = dataset;
-        var lines = getLineData(dataset, context);
+        if (dataset !== null) {
+            this.dataset = dataset;
+        }
 
-        chart_svg.select('.x')
-                .call(axis['x'])
-                .selectAll('text')
-                    .style('text-anchor','end')
-                    .attr('transform','rotate(-45)');
-        chart_svg.select('.y')
-                .call(axis['y']);
-
-        updateLines(lines, context);
-    }
-
-    this.changeContext = function(context) {
-        console.log(context);
+        colors = BASE[context.base].color;
         var lines = getLineData(this.dataset, context);
 
         chart_svg.select('.x')

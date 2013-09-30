@@ -14,7 +14,7 @@
         var app_test_data = gen_fake_data('daily', 'app_cat');
 
         // Default context
-        var chart_context = {
+        var lineContext = {
             'unit': jsonSet[0].unit,
             'type': 0, // impression | click | ctr
             'base': jsonSet[0].base,   // platform | app | ad
@@ -23,7 +23,7 @@
 
         var line_chart;        // shared line chart
         line_chart = new LineChart();
-        line_chart.create(jsonSet[0].dataset, chart_context);
+        line_chart.create(jsonSet[0].dataset, lineContext);
         init_line_chart_var(line_chart);
 
 
@@ -53,14 +53,13 @@
 
             line_chart.chart_data = data[1];*/
 
-            chart_context.base = slider.current;
-            line_chart.update(jsonSet[slider.current].dataset, chart_context);
+            var newContext = line_chart.context;
+            newContext.base = slider.current;
+            line_chart.update(jsonSet[slider.current].dataset, newContext);
         });
 
-
-        var bar_charts = new BarCharts();
-        //bar_charts.create_label(platform_name);
-        bar_charts.create(prepareData(jsonSet[0].dataset, 0), line_chart.chart_context, platform_name, data_type);
+        var bars = new BarCharts();
+        bars.create(prepareData(jsonSet[0].dataset, 0));
 
 
         var donuts = new DonutCharts();
@@ -74,27 +73,42 @@
 
 
         $('#refresh-btn').on('click', refresh_data);
-        $('.type_radio').on('click', change_line_type);
+        $('.type_radio').on('click', changeType);
 
         function refresh_data() {
             jsonSet[slider.current] = genJson('daily', slider.current);
-            chart_context.unit = jsonSet[slider.current].unit;
+            lineContext.unit = jsonSet[slider.current].unit;
 
-            line_chart.update(jsonSet[slider.current].dataset, chart_context);
+            line_chart.update(jsonSet[slider.current].dataset, lineContext);
 /*
-            bar_charts.update(plat_test_data[1], line_chart.chart_context);
-            ad_pie_charts.update(ad_test_data[1], line_chart.chart_context);*/
+            bar_charts.update(plat_test_data[1], line_chart.lineContext);
+            ad_pie_charts.update(ad_test_data[1], line_chart.lineContext);*/
         }
 
-        function change_line_type() {
-            var type_val = $('input[name=type]:checked').val();
+        function changeType() {
+            var newContext = line_chart.context;
+            newContext.type = $('input[name=type]:checked').val();
 
+            var curChart;
+            switch(slider.current) {
+                case 0: 
+                    curChart = bars;
+                    break;
+                case 1:
+                    curChart = donuts;
+                    break;
+                case 2:
+                    break;
+            }
+            console.log(curChart);
+            curChart.changeType(newContext.type, newContext.cat);
+/*
             var type_bars = $('.sub-chart div[name*="' + type_val + '"]');
-            var base_values = line_chart.chart_context['base_value'];
+            var clickedCat = line_chart.context.cat;
 
             for (var i = 0; i < base_values.length; i++) {
                 type_bars[base_values[i]].click();
-            }
+            }*/
         }
     });
 })();

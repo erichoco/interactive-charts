@@ -13,15 +13,15 @@ function updateLineContext(type, cat) {
     var newContext = line_chart.context;
 
     if (type !== newContext.type) {
-        $('input[name=type][value=' + TYPE[type] + ']')[0].checked = true;
+        $('input[name=type][value=' + type + ']')[0].checked = true;
         newContext.type = type;
         newContext.cat = [0];
-        //line_chart.reset_to_tol();
     }
     
     newContext = updateCat(newContext, cat);
 
-    line_chart.changeContext(newContext);
+    //line_chart.changeContext(newContext);
+    line_chart.update(null, newContext);
 }
 
 function updateCat(newContext, cat) {
