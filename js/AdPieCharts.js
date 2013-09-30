@@ -98,7 +98,7 @@ function AdPieCharts() {
                 .attr('y', chart_r * -0.16)
                 .attr('text-anchor', 'middle')
                 .text(function(d, i) {
-                    return TYPE_NAME['type' + i];
+                    return TYPE_NAME[i];
                 })
         pie.append('text')
                 .attr('class', 'pie-text value')
