@@ -1,6 +1,7 @@
 var TYPE = ['Impressions', 'Clicks', 'CTR'];
 
-var TYPE_UNIT = ['', '', '%'];
+// Unit for CTR should be %. Disabled here and let valToText in util.js handle it.
+var TYPE_UNIT = ['', '', ''];
 
 
 var BASE = [ {
@@ -18,6 +19,7 @@ var BASE = [ {
             'Category 5',
             'Category 6'
         ],
+        'color': ['#5E5E5E',] // Config rest of the colors in the DonutCharts.js
     }, {
         'name': 'app', 
         'cat': [

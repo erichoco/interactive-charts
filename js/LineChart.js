@@ -217,7 +217,6 @@ function LineChart() {
             .attr('cx', line.x())
             .attr('cy', line.y())
             .attr('r', 3)
-            //.each(addTooltip)
             .on({
                 'mouseover': function(d, i, j) {
                     handleTooltip(d3.select(this), context, i, j, true);
@@ -281,7 +280,8 @@ function LineChart() {
     }
 
     this.changeContext = function(context) {
-        var lines = getLineData(this.dataset, context)
+        console.log(context);
+        var lines = getLineData(this.dataset, context);
         updateLines(lines, context);
     }
 

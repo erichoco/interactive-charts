@@ -15,15 +15,15 @@
 
         // Default context
         var chart_context = {
-            'unit': jsonSet[0].unit,
+            'unit': jsonSet[1].unit,
             'type': 0, // impression | click | ctr
-            'base': jsonSet[0].base,   // platform | app | ad
+            'base': jsonSet[1].base,   // platform | app | ad
             'cat': [0]     // must correspond to the order of dataset passed to LineChart obj
         }
 
         var line_chart;        // shared line chart
         line_chart = new LineChart();
-        line_chart.create(jsonSet[0].dataset, chart_context);
+        line_chart.create(jsonSet[1].dataset, chart_context);
         init_line_chart_var(line_chart);
 
 

@@ -241,7 +241,7 @@ function prepareData(dataset, base) {
         for (var j = 0; j < TYPE.length; j++) {
             //data[j].push({});
             data[j].push({
-                "cat": BASE[base].cat[i],
+                "cat": i,
                 "val": val[j]
             });
         }
@@ -249,8 +249,7 @@ function prepareData(dataset, base) {
 
     for (var i = 0; i < TYPE.length; i++) {
         donutDataset.push({
-            "type": TYPE[i],
-            "unit": TYPE_UNIT[i],
+            "type": i,
             "data": data[i],
             "total": total[i]
         });

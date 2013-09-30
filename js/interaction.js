@@ -8,33 +8,36 @@ function init_line_chart_var(line) {
 /* 
  * Update line chart according to bottom chart selections
  */
-function updateLineContext(type, group, cat) {
-    if (type !== line_chart.context.type) {
+function updateLineContext(type, cat) {
+
+    var newContext = line_chart.context;
+
+    if (type !== newContext.type) {
         $('input[name=type][value=' + TYPE[type] + ']')[0].checked = true;
-        line_chart.context.type = type;
+        newContext.type = type;
+        newContext.cat = [0];
         //line_chart.reset_to_tol();
     }
     
-    line_chart.context = updateCat(cat);
+    newContext = updateCat(newContext, cat);
+    console.log('hey')
+    line_chart.changeContext(newContext);
 
-    line_chart.update();
-
-    return line_chart.context;
+    //return line_chart.context;
 }
 
-function updateCat(cat) {
-    var context = line_chart.context;
+function updateCat(newContext, cat) {
 
     if (0 === cat) {
-        context.cat = [0];
-        return context;
+        newContext.cat = [0];
+        return newContext;
     }
 
-    var catIdx = context.cat.indexOf(cat);
+    var catIdx = newContext.cat.indexOf(cat);
     if (-1 === catIdx) {
-        context.cat.push(cat);
+        newContext.cat.push(cat);
     } else {
-        context.cat.splice(catIdx, 1);
+        newContext.cat.splice(catIdx, 1);
     }
-    return context;
+    return newContext;
 }
