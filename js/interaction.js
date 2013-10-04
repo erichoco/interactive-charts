@@ -1,6 +1,6 @@
 var line_chart;
 
-function init_line_chart_var(line) {
+function initLineChartVar(line) {
     line_chart = line;
 }
 

@@ -42,6 +42,7 @@ var BASE = [ {
             'App 15',
             'App 16',
         ],
+        'color': ['#5E5E5E',]
     },
 ];
 

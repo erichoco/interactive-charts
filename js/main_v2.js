@@ -24,7 +24,7 @@
         var line_chart;        // shared line chart
         line_chart = new LineChart();
         line_chart.create(jsonSet[0].dataset, lineContext);
-        init_line_chart_var(line_chart);
+        initLineChartVar(line_chart);
 
 
         $('#bottom-slider li').css('width', $('#bottom-slider').width());
@@ -65,11 +65,11 @@
         var donuts = new DonutCharts();
         donuts.create(prepareData(jsonSet[1].dataset, 1));
 
-/*
-        var app_pie_charts = new AppPieCharts();
-        var app_data = appPieData();
-        console.log(app_data);
-        app_pie_charts.create(app_data);*/
+
+        var appPies = new AppPieCharts();
+        var appData = appPieData();
+        //console.log(app_data);
+        appPies.create(appData);
 
 
         $('#refresh-btn').on('click', refresh_data);
