@@ -58,28 +58,36 @@
             line_chart.update(jsonSet[slider.current].dataset, newContext);
         });
 
+        var curBtmChart = new Array();
+
         var bars = new BarCharts();
         bars.create(prepareData(jsonSet[0].dataset, 0));
+        curBtmChart.push(bars);
 
 
         var donuts = new DonutCharts();
         donuts.create(prepareData(jsonSet[1].dataset, 1));
+        curBtmChart.push(donuts);
 
 
-        var appPies = new AppPieCharts();
+        var appCharts = new AppPieCharts();
         var appData = appPieData();
         //console.log(app_data);
-        appPies.create(appData);
+        appCharts.create(appData);
+        curBtmChart.push(appCharts);
 
 
         $('#refresh-btn').on('click', refresh_data);
         $('.type_radio').on('click', changeType);
 
         function refresh_data() {
-            jsonSet[slider.current] = genJson('daily', slider.current);
-            lineContext.unit = jsonSet[slider.current].unit;
+            var cur = slider.current;
+            jsonSet[cur] = genJson('daily', cur);
+            lineContext.unit = jsonSet[cur].unit;
 
-            line_chart.update(jsonSet[slider.current].dataset, lineContext);
+            line_chart.update(jsonSet[cur].dataset, lineContext);
+
+            curBtmChart[cur].update(prepareData(jsonSet[cur].dataset, cur));
 /*
             bar_charts.update(plat_test_data[1], line_chart.lineContext);
             ad_pie_charts.update(ad_test_data[1], line_chart.lineContext);*/

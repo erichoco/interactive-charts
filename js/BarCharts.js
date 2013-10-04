@@ -74,6 +74,7 @@ function BarCharts() {
         var horizBar = d3.selectAll('.bars')
                             .selectAll('.horiz-bar')
                             .data(function(d) {
+                                console.log('new d', d);
                                 return d.data;
                             });
 

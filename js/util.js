@@ -18,6 +18,7 @@ function get_percentage(data, dataset, round_place) {
 function getBarPer(thisEl) {
     var thisData = d3.select(thisEl).data()[0];
     var parData = d3.select(thisEl.parentNode).data()[0];
+    console.log(parData);
 
     if (2 === parData.type) {
         return 100*thisData.val/d3.sum(parData.data,
