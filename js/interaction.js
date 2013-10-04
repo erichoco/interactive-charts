@@ -1,6 +1,6 @@
 var line_chart;
 
-function init_line_chart_var(line) {
+function initLineChartVar(line) {
     line_chart = line;
 }
 
@@ -8,32 +8,34 @@ function init_line_chart_var(line) {
 /* 
  * Update line chart according to bottom chart selections
  */
-function update_line_from_bottom(type, base, base_value) {
-    if (type !== line_chart.chart_context['type']) {
+function updateLineContext(type, cat) {
+
+    var newContext = line_chart.context;
+
+    if (type !== newContext.type) {
         $('input[name=type][value=' + type + ']')[0].checked = true;
-        line_chart.chart_context['type'] = type;
-        line_chart.reset_to_tol();
+        newContext.type = type;
+        newContext.cat = [0];
     }
+    
+    newContext = updateCat(newContext, cat);
 
-    line_chart.chart_context = update_base_value(base_value);
-    console.log(line_chart.chart_context);
-    line_chart.update();
-
-    return line_chart.chart_context;
+    //line_chart.changeContext(newContext);
+    line_chart.update(null, newContext);
 }
 
-function update_base_value(base_value) {
-    var context = line_chart.chart_context;
-    if (base_value === 0) {
-        context['base_value'] = [0];
-        return context;
+function updateCat(newContext, cat) {
+
+    if (0 === cat) {
+        newContext.cat = [0];
+        return newContext;
     }
-    var bv_idx = context['base_value'].indexOf(base_value);
-    if (bv_idx === -1) {
-        context['base_value'].push(base_value);
+
+    var catIdx = newContext.cat.indexOf(cat);
+    if (-1 === catIdx) {
+        newContext.cat.push(cat);
+    } else {
+        newContext.cat.splice(catIdx, 1);
     }
-    else {
-        context['base_value'].splice(bv_idx, 1);
-    }
-    return context;
+    return newContext;
 }

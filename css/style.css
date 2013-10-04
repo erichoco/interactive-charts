@@ -47,7 +47,7 @@ body {
 .axis line {
   stroke: #D1D0D0; }
 
-.path-line {
+.line path, .line .axis line, .axis .line line {
   fill: none;
   stroke: #5e5e5e;
   stroke-width: 1.5px; }
@@ -61,9 +61,8 @@ body {
   .dot.tol-bg {
     stroke: #5e5e5e; }
 
-#ring {
+.ring {
   fill: none;
-  stroke: #D0D0D0;
   stroke-width: 4px; }
 
 div.platform-label {
@@ -78,17 +77,17 @@ div.platform-name {
   margin: 0px 10px 10px 2px;
   display: inline-block; }
 
-.chart-wrapper {
+.bars-wrapper {
   margin: 10px; }
 
-.chart-label {
+.bars-title {
   padding: 10px;
   width: 100px;
   display: inline-block;
   font-size: 1.1em;
   text-align: right; }
 
-.sub-chart {
+.bars {
   padding: 5px 0;
   display: inline-block;
   vertical-align: top;
@@ -96,17 +95,18 @@ div.platform-name {
   /* Fix for IE7 */
   *display: inline;
   /* Fix for IE7 */ }
-  .sub-chart .horiz-bar {
+  .bars .horiz-bar, .bars .total-bar {
     margin: 2px 0;
-    display: inline-block;
     color: white;
-    text-align: center;
-    /*border-radius: 0 5px 5px 0;
-    -moz-border-radius: 0 5px 5px 0;
-    -webkit-border-radius: 0 5px 5px 0;*/ }
-  .sub-chart .horiz-bar:hover {
-    opacity: 0.9; }
-  .sub-chart .ios-bg {
+    text-align: center; }
+    .bars .horiz-bar:hover, .bars .total-bar:hover {
+      opacity: 0.9; }
+  .bars .horiz-bar {
+    display: inline-block; }
+  .bars .total-bar {
+    display: block;
+    border-radius: 5px; }
+  .bars .ios-bg {
     background: #5ab5df;
     background: -moz-linear-gradient(top, #5ab5df 0%, #1a6486 100%);
     /*background: -webkit-gradient(linear,left top,left bottom,color-stop(0%,$color),color-stop(100%,$color_d));*/
@@ -114,9 +114,8 @@ div.platform-name {
     background: -o-linear-gradient(top, #5ab5df 0%, #1a6486 100%);
     background: -ms-linear-gradient(top, #5ab5df 0%, #1a6486 100%);
     background: linear-gradient(top, #5ab5df 0%, #1a6486 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='$color',endColorstr='$color_d',GradientType=0);
-    border-radius: 5px 0 0 5px; }
-    .sub-chart .ios-bg.clicked {
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='$color',endColorstr='$color_d',GradientType=0); }
+    .bars .ios-bg.clicked {
       background: #1a6486;
       background: -moz-linear-gradient(top, #1a6486 0%, #5ab5df 100%);
       background: -webkit-gradient(linear, left top, left bottom, color_d-stop(0%, #1a6486), color_d-stop(100%, #5ab5df));
@@ -125,7 +124,7 @@ div.platform-name {
       background: -ms-linear-gradient(top, #1a6486 0%, #5ab5df 100%);
       background: linear-gradient(top, #1a6486 0%, #5ab5df 100%);
       filter: progid:DXImageTransform.Microsoft.gradient(startcolor_dstr='$color_d',endcolor_dstr='$color',GradientType=0); }
-  .sub-chart .and-bg {
+  .bars .and-bg {
     background: #a4d247;
     background: -moz-linear-gradient(top, #a4d247 0%, #5d7b1e 100%);
     /*background: -webkit-gradient(linear,left top,left bottom,color-stop(0%,$color),color-stop(100%,$color_d));*/
@@ -133,9 +132,8 @@ div.platform-name {
     background: -o-linear-gradient(top, #a4d247 0%, #5d7b1e 100%);
     background: -ms-linear-gradient(top, #a4d247 0%, #5d7b1e 100%);
     background: linear-gradient(top, #a4d247 0%, #5d7b1e 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='$color',endColorstr='$color_d',GradientType=0);
-    border-radius: 0 5px 5px 0; }
-    .sub-chart .and-bg.clicked {
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='$color',endColorstr='$color_d',GradientType=0); }
+    .bars .and-bg.clicked {
       background: #5d7b1e;
       background: -moz-linear-gradient(top, #5d7b1e 0%, #a4d247 100%);
       background: -webkit-gradient(linear, left top, left bottom, color_d-stop(0%, #5d7b1e), color_d-stop(100%, #a4d247));
@@ -144,7 +142,7 @@ div.platform-name {
       background: -ms-linear-gradient(top, #5d7b1e 0%, #a4d247 100%);
       background: linear-gradient(top, #5d7b1e 0%, #a4d247 100%);
       filter: progid:DXImageTransform.Microsoft.gradient(startcolor_dstr='$color_d',endcolor_dstr='$color',GradientType=0); }
-  .sub-chart .tol-bg {
+  .bars .tol-bg {
     background: #5e5e5e;
     background: -moz-linear-gradient(top, #5e5e5e 0%, #454545 100%);
     /*background: -webkit-gradient(linear,left top,left bottom,color-stop(0%,$color),color-stop(100%,$color_d));*/
@@ -153,7 +151,6 @@ div.platform-name {
     background: -ms-linear-gradient(top, #5e5e5e 0%, #454545 100%);
     background: linear-gradient(top, #5e5e5e 0%, #454545 100%);
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='$color',endColorstr='$color_d',GradientType=0);
-    border-radius: 5px;
     /*&.clicked {
         @include clicked($tol_color, $tol_color_d);
     }*/ }

@@ -95,7 +95,7 @@ body {
     }
 }
 
-.path-line{
+.line path {
     fill: none;
     stroke: $tol_color;
     stroke-width: 1.5px;
@@ -114,9 +114,8 @@ body {
     }
 }
 
-#ring {
+.ring {
     fill: none;
-    stroke: #D0D0D0;
     stroke-width: 4px;
 }
 
@@ -132,40 +131,42 @@ div.platform-name {
     margin: 0px 10px 10px 2px;
     display: inline-block;
 }
-.chart-wrapper {
+.bars-wrapper {
     margin: 10px;
 }
-.chart-label {
+.bars-title {
     padding: 10px;
     width: 100px;
     display: inline-block;
     font-size: 1.1em;
     text-align: right;
 }
-.sub-chart {
+.bars {
     padding: 5px 0;
     display: inline-block;
     vertical-align: top;
     zoom: 1; /* Fix for IE7 */
     *display: inline; /* Fix for IE7 */
 
-    .horiz-bar {
+    .horiz-bar, .total-bar {
         margin: 2px 0;
-        display: inline-block;
         color: white;
         text-align: center;
-        /*border-radius: 0 5px 5px 0;
-        -moz-border-radius: 0 5px 5px 0;
-        -webkit-border-radius: 0 5px 5px 0;*/
-        //border:1px solid #1A87B9
+        &:hover {
+            opacity: 0.9;
+        }
     }
-    .horiz-bar:hover {
-        opacity: 0.9;
+    .horiz-bar {
+        display: inline-block;
+    }
+    .total-bar {
+        display: block;
+        border-radius: 5px;
     }
     .ios-bg {
         @include button($ios_color, $ios_color_d);
         //border:1px solid #1A87B9;
-        border-radius: 5px 0 0 5px;
+        //border-radius: 5px 0 0 5px;
         &.clicked {
             @include clicked($ios_color, $ios_color_d);
         }
@@ -173,14 +174,14 @@ div.platform-name {
     .and-bg {
         @include button($and_color, $and_color_d);
         //border:1px solid #459A00;
-        border-radius: 0 5px 5px 0;
+        //border-radius: 0 5px 5px 0;
         &.clicked {
             @include clicked($and_color, $and_color_d);
         }
     }
     .tol-bg {
         @include button($tol_color, $tol_color_d);
-        border-radius: 5px;
+        //border-radius: 5px;
         /*&.clicked {
             @include clicked($tol_color, $tol_color_d);
         }*/

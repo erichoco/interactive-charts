@@ -151,4 +151,8 @@ function AppPie(data, m, r) {
                 .on('click', magnify)
                 .each(stash);
     };
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> proto_v1
