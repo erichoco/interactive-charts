@@ -19,3 +19,4 @@ TODO:
 
 TOFIX:
     a) Radio button and chart elements interactions
+    b) Bar chart refresh
