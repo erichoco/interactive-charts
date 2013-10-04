@@ -67,9 +67,10 @@
 
 
         var appPies = new AppPieCharts();
-        var appData = appPieData();
-        //console.log(app_data);
-        appPies.create(appData);
+        //var appData = appPieData();
+        appPies.create(prepareNestedData(jsonSet[2].dataset, 2));
+
+        console.log(prepareNestedData(jsonSet[2].dataset, 2));
 
 
         $('#refresh-btn').on('click', refresh_data);

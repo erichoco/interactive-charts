@@ -22,7 +22,7 @@ var BASE = [ {
         ],
         'color': ['#5E5E5E',] // Config rest of the colors in the DonutCharts.js
     }, {
-        'name': 'app', 
+        'name': 'app',
         'cat': [
             'Total',
             'App 1',
@@ -42,7 +42,8 @@ var BASE = [ {
             'App 15',
             'App 16',
         ],
-        'color': ['#5E5E5E',]
+        'color': ['#5E5E5E',],
+        'groupCount': [3, 6, 2, 5] // The amount of cats in group i
     },
 ];
 

@@ -1,5 +1,6 @@
 function AppPieCharts() {
     var charts = d3.select('#app-pie-charts');
+    var base = 2;
     var m, r;
 
     var appPies = new Array();
@@ -9,18 +10,39 @@ function AppPieCharts() {
         m = $charts.innerWidth() / dataset.length / 2 * 0.14;
         r = $charts.innerWidth() / dataset.length / 2 * 0.85;
 
+        charts.append('svg')
+            .attr('class', 'legend')
+            .attr('width', '100%')
+            .attr('height', 100)
+            .attr('transform', 'translate(0, -100)');
+
         for (var i = 0; i < dataset.length; i++) {
             appPies.push(new AppPie(dataset[i], m, r));
         };
         for (var i = 0; i < appPies.length; i++) {
             appPies[i].create();
         };
+
+        createLegend(charts, base);
+    }
+
+    this.update = function(dataset) {
+        if (dataset.length !== appPies.length) {
+            alert('Error: Data type unmatched');
+        }
+        for (var i = 0; i < dataset.length; i++) {
+            appPies[i],dataset = dataset[i];
+            appPies[i].update();
+        };
     }
 }
 
 function AppPie(data, m, r) {
+    var appPie;
 
     var path;
+
+    var base = 2;
 
     var color = d3.scale.ordinal()
         .domain([0, 10])
@@ -101,7 +123,7 @@ function AppPie(data, m, r) {
      * Code by Mike Bistock https://gist.github.com/mbostock/1306365 
      */
 
-    function tuneRad(d) {
+    var tuneRad = function(d) {
         if(d.depth === 0) {
             d.dy += r * 0.15;
         } else if (d.depth === 1) {
@@ -110,25 +132,87 @@ function AppPie(data, m, r) {
         }
      }
 
+     var pathAnim = function(path, d, dir) {
+        switch(dir) {
+            case 0:
+                path.transition()
+                    .duration(500)
+                    .ease('bounce')
+                    .attr('d', d3.svg.arc()
+                        .startAngle(d.x)
+                        .endAngle(d.x + d.dx)
+                        .innerRadius(d.y)
+                        .outerRadius(d.y + d.dy)
+                    );
+                break;
+
+            case 1:
+                path.transition()
+                    .attr('d', d3.svg.arc()
+                        .startAngle(d.x)
+                        .endAngle(d.x + d.dx)
+                        .innerRadius(d.y)
+                        .outerRadius(d.y + d.dy * 1.2)
+                    );
+                break;
+        }
+    }
+
+    var legendAnim = function(pathD, dir) {
+        var appCharts = d3.select(appPie.node().parentNode.parentNode);
+        var thisLegend = appCharts.selectAll('.legend .legend-icon')
+                .filter(function(d, i) {
+                    return i === pathD.name - 1;
+                });
+        thisLegend.transition()
+                .duration(300)
+                .attr('r', (dir)? 10:6);
+    }
+
+    var eventObj = {
+        'click': magnify,
+        'mouseover': function(d) {
+            if (2 === d.depth) {
+                pathAnim(d3.select(this), d, 1);
+                legendAnim(d, 1);
+            }
+        },
+        'mouseout': function(d) {
+            if (2 === d.depth) {
+                pathAnim(d3.select(this), d, 0);
+                legendAnim(d, 0);
+            }
+        }
+    }
+
     this.dataset = data;
     this.m = m;
     this.r = r;
 
     this.create = function() {
 
-        var appPie = d3.select('#app-pie-charts').append("svg:svg")
+        appPie = d3.select('#app-pie-charts').append("svg:svg")
                         .attr('class', 'app-pie')
                         .attr("width", (this.r + this.m) * 2)
                         .attr("height", (this.r + this.m) * 2)
                     .append("svg:g")
                         .attr("transform", "translate(" + (this.r + this.m) + "," + (this.r + this.m) + ")");
+        this.update();
+    };
 
-        var groupCount = 0;//colorSet.length;
+    this.update = function() {
+        var groupCount = 0;
         var itemCount = 0;
         var groupCol;
+
         path = appPie.data([this.dataset]).selectAll('path')
-                .data(partition.nodes)
-                .enter().append('svg:path')
+                .data(partition.nodes);
+
+        path.transition()
+            .duration(500)
+            .attr('d', arc);
+
+        path.enter().append('svg:path')
                 .each(tuneRad)
                 .attr('d', arc)
                 .style('fill', function(d, i) {
@@ -143,16 +227,16 @@ function AppPie(data, m, r) {
                             .range(colorbrewer[colorSet[groupCount++]][childLen+2]);
                         return groupCol(childLen+2);
                     }
-                    console.log(itemCount);
+                    //console.log(itemCount);
                     itemCount--;
+                    BASE[base].color[d.name] = groupCol(itemCount+2);
                     return groupCol(itemCount+2);
                 })
                 .style('stroke', '#ffffff')
-                .on('click', magnify)
+                .on(eventObj)
                 .each(stash);
-    };
-<<<<<<< HEAD
+
+        path.exit().remove();
+
+    }
 }
-=======
-}
->>>>>>> proto_v1

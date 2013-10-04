@@ -183,7 +183,7 @@ function DonutCharts() {
 
         paths
             .transition()
-            .duration(1000)
+            .duration(500)
             .attr('d', arc);
 
         paths.enter()

@@ -75,6 +75,10 @@ function createLegend(chart, base) {
                     .data(BASE[base].cat.slice(1, BASE[base].cat.length))
                 .enter().append('g')
                     .attr('transform', function(d, i) {
+                        if (2 === base) {
+                            return 'translate(' + ((i%10)*100 + 50) + ', ' +
+                                ((Math.floor(i/10))*30 + 10) + ')';
+                        }
                         return 'translate(' + (i * 150 + 50) + ', 10)';
                     });
 
@@ -298,7 +302,89 @@ function prepareData(dataset, base) {
     return donutDataset;
 }
 
+function prepareNestedData(dataset, base) {
+    var resultDataset = new Array();
+    var children1 = new Array();
+    var children2 = new Array();
+    var total = new Array();
 
+    for (var i = 0; i < TYPE.length; i++) {
+        children1[i] = new Array();
+        children2[i] = new Array();
+        total[i] = 0;
+    }
+
+    // Extract total data.
+    for (var i = 0; i < dataset.length; i++) {
+        if (0 === dataset[i].cat) {
+            for (var j = 0; j < dataset[i].data.length - 1; j++) {
+                var curData = dataset[i].data[j];
+                total[curData.type] += curData.val;
+            }
+            // Skip sum in the previous loop for CTR.
+            // Recalculate here.
+            total[2] = total[1] / total[0] * 100;
+        }
+    }
+
+    // Extract other categories of data.
+    // Start i at 1 in order to skip total data (whose cat = 0).
+    var gpCount = 0;
+    for (var i = 1, catIdxOfGp = 1; i < BASE[base].cat.length; i++, catIdxOfGp++) {
+
+        // Initial data and value sets for different types in same cat.
+        var val = new Array();
+        for (var j = 0; j < TYPE.length; j++) {
+            val[j] = 0;
+        }
+
+        for (var j = 0; j < dataset.length; j++) {
+
+            if (dataset[j].cat !== i) { continue; }
+
+            // Sum value of the same type in same cat. (skip type = CTR)
+            for (var k = 0; k < dataset[j].data.length - 1; k++) {
+                var curData = dataset[j].data[k];
+                // Handle CTR
+                val[curData.type] += curData.val;
+            }
+        }
+
+        val[2] = val[1] / val[0] * 100;
+
+        for (var j = 0; j < TYPE.length; j++) {
+            children2[j].push({
+                "name": i,
+                "val": val[j]
+            });
+        }
+
+
+        if (catIdxOfGp === BASE[base].groupCount[gpCount]) {
+            for (var j = 0; j < TYPE.length; j++) {
+                children1[j].push({
+                    "name": gpCount,
+                    "children": children2[j]
+                });
+                children2[j] = new Array();
+            }
+            gpCount++;
+            catIdxOfGp = 0;
+        }
+    }
+
+    for (var i = 0; i < TYPE.length; i++) {
+        resultDataset.push({
+            "name": i,
+            "children": children1[i],
+            "total": total[i]
+        });
+    }
+
+    return resultDataset;
+}
+
+/*
 function appPieData() {
     return [
     {
@@ -339,7 +425,7 @@ function appPieData() {
                 { "name": "messanger", "val": 1000 }
             ]
         }
-        ]
+        ],
     },
     {
         "name": "Clicks",
@@ -425,132 +511,5 @@ function appPieData() {
         ]
     } 
     ];
-}
+}*/
 
-function appPieData() {
-    return [
-    {
-        "name": "Impressions",
-        "children": [
-        {
-            "name": "google",
-            "children": [
-                { "name": "drive", "val": 1000 },
-                { "name": "play", "val": 1000 },
-                { "name": "gmail", "val": 1000 },
-                { "name": "youtube", "val": 1000 },
-                { "name": "android", "val": 1000 },
-                { "name": "search", "val": 1000 }
-            ]
-        },
-        {
-            "name": "apple",
-            "children": [
-                { "name": "iphone", "val": 1000 },
-                { "name": "mac", "val": 1000 }
-            ]
-        },
-        {
-            "name": "MS",
-            "children": [
-                { "name": "hotmail", "val": 1000 },
-                { "name": "hotmail", "val": 1000 },
-                { "name": "hotmail", "val": 1000 },
-                { "name": "Windows", "val": 1000 }
-            ]
-        },
-        {
-            "name": "Facebook",
-            "children": [
-                { "name": "timeline", "val": 1000 },
-                { "name": "timeline", "val": 1000 },
-                { "name": "messanger", "val": 1000 }
-            ]
-        }
-        ]
-    },
-    {
-        "name": "Clicks",
-        "children": [
-        {
-            "name": "google",
-            "children": [
-                { "name": "drive", "val": 1000 },
-                { "name": "play", "val": 1000 },
-                { "name": "gmail", "val": 1000 },
-                { "name": "youtube", "val": 1000 },
-                { "name": "android", "val": 1000 },
-                { "name": "search", "val": 1000 }
-            ]
-        },
-        {
-            "name": "apple",
-            "children": [
-                { "name": "iphone", "val": 1000 },
-                { "name": "mac", "val": 1000 }
-            ]
-        },
-        {
-            "name": "MS",
-            "children": [
-                { "name": "hotmail", "val": 1000 },
-                { "name": "hotmail", "val": 1000 },
-                { "name": "hotmail", "val": 1000 },
-                { "name": "Windows", "val": 1000 }
-            ]
-        },
-        {
-            "name": "Facebook",
-            "children": [
-                { "name": "timeline", "val": 1000 },
-                { "name": "timeline", "val": 1000 },
-                { "name": "messanger", "val": 1000 }
-            ]
-        }
-        ]
-    }, 
-    {
-        "name": "CTR",
-        "children": [
-        {
-            "name": "google",
-            "children": [
-                { "name": "drive", "val": 1000 },
-                { "name": "play", "val": 1000 },
-                { "name": "gmail", "val": 1000 },
-                { "name": "youtube", "val": 1000 },
-                { "name": "android", "val": 1000 },
-                { "name": "search", "val": 1000 }
-            ]
-        },
-        {
-            "name": "apple",
-            "children": [
-                { "name": "iphone", "val": 1000 },
-                { "name": "mac", "val": 1000 }
-            ]
-        },
-        {
-            "name": "MS",
-            "children": [
-                { "name": "hotmail", "val": 1000 },
-                { "name": "hotmail", "val": 1000 },
-                { "name": "hotmail", "val": 1000 },
-                { "name": "Windows", "val": 1000 },
-                { "name": "hotmail", "val": 1000 },
-                { "name": "hotmail", "val": 1000 },
-                { "name": "hotmail", "val": 1000 }
-            ]
-        },
-        {
-            "name": "Facebook",
-            "children": [
-                { "name": "timeline", "val": 1000 },
-                { "name": "timeline", "val": 1000 },
-                { "name": "messanger", "val": 1000 }
-            ]
-        }
-        ]
-    } 
-    ];
-}
