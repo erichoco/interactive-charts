@@ -65,6 +65,9 @@ body {
   fill: none;
   stroke-width: 4px; }
 
+.legend-label {
+  box-shadow: 2px 2px 1px #D1D0D0; }
+
 div.platform-label {
   margin: 10px 10px 0px 10px;
   display: inline-block;
@@ -159,8 +162,12 @@ div.platform-name {
   text-align: center;
   font-size: 1.2em; }
 
-.legend-label {
-  box-shadow: 2px 2px 1px #D1D0D0; }
+.center-txt {
+  text-anchor: middle; }
+  .center-txt.type {
+    font-weight: bolder; }
+  .center-txt.percentage {
+    fill: #A2A2A2; }
 
 .ios-bg {
   background-color: #5ab5df;

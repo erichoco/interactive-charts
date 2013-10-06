@@ -9,6 +9,7 @@ function DonutCharts() {
 
     var unclickAllPath = function() {
         var paths = charts.selectAll('.clicked');
+        console.log(paths);
         pathAnim(paths, 0);
         paths.classed('clicked', false);
         resetAllCenterText();
@@ -34,7 +35,6 @@ function DonutCharts() {
             'click': function(d) {
                 unclickAllPath();
                 updateLineContext(d.type, 0);
-                console.log('hey');
             }
         }
 
@@ -49,19 +49,14 @@ function DonutCharts() {
         donuts.append('text')
                 .attr('class', 'center-txt type')
                 .attr('y', chart_r * -0.16)
-                .attr('text-anchor', 'middle')
-                .style('font-weight', 'bold')
                 .text(function(d, i) {
                     return TYPE[d.type];
                 });
         donuts.append('text')
                 .attr('class', 'center-txt value')
-                .attr('text-anchor', 'middle');
         donuts.append('text')
                 .attr('class', 'center-txt percentage')
                 .attr('y', chart_r * 0.16)
-                .attr('text-anchor', 'middle')
-                .style('fill', '#A2A2A2');
     }
 
     var setCenterText = function(thisDonut) {
@@ -70,13 +65,14 @@ function DonutCharts() {
         var returnVal = function(d) {
                             return d.data.val;
                         };
+
+        var val, per;
         if (2 !== donutData.type) {
-            var val = d3.sum(clickedData, returnVal);
-            var per = (val)? val/donutData.total*100
-                           : '';
+            val = d3.sum(clickedData, returnVal);
+            per = (val)? val/donutData.total*100 : null;
         } else {
-            var val = d3.mean(clickedData, returnVal);
-            var per = '';
+            val = d3.mean(clickedData, returnVal);
+            per = null;
         }
 
         thisDonut.select('.value')
@@ -84,7 +80,9 @@ function DonutCharts() {
                 return (val)? valToText(val) + TYPE_UNIT[d.type]
                             : valToText(d.total) + TYPE_UNIT[d.type];
             });
-        thisDonut.select('.percentage').text(valToText(per));
+        thisDonut.select('.percentage').text(function() {
+            return (per)? valToText(per) + '%' : '';
+        });
     }
 
     var resetAllCenterText = function() {
@@ -129,7 +127,7 @@ function DonutCharts() {
                 thisDonut.select('.value').text(function(donut_d) {
                     return valToText(d.data.val) + TYPE_UNIT[donut_d.type];
                 });
-                thisDonut.select('.percentage').text(function(donut_d, donut_i) {
+                thisDonut.select('.percentage').text(function(donut_d) {
                     return (2 === donut_d.type)? ''
                                 : (d.data.val/donut_d.total*100).toFixed(2) + '%';
                 });

@@ -13,7 +13,7 @@ function AppPieCharts() {
         charts.append('svg')
             .attr('class', 'legend')
             .attr('width', '100%')
-            .attr('height', 100)
+            .attr('height', 60)
             .attr('transform', 'translate(0, -100)');
 
         for (var i = 0; i < dataset.length; i++) {
@@ -38,9 +38,8 @@ function AppPieCharts() {
 }
 
 function AppPie(data, m, r) {
+    var charts = d3.select('#app-pie-charts');
     var appPie;
-
-    var path;
 
     var base = 2;
 
@@ -66,6 +65,7 @@ function AppPie(data, m, r) {
             return d.y + d.dy;
         });
     var partition = d3.layout.partition()
+        .sort(null)
         .size([2 * Math.PI, r])
         .value(function(d) {
             return d.val;
@@ -73,7 +73,6 @@ function AppPie(data, m, r) {
 
     // Distort the specified node to 80% of its parent.
     function magnify(node) {
-      console.log(node, this);
       if (node.depth === 2) return;
       if (parent = node.parent) {
         var parent,
@@ -88,7 +87,7 @@ function AppPie(data, m, r) {
         reposition(node, 0, node.dx / node.value);
       }
 
-      path.transition()
+      appPie.selectAll('path').transition()
           .duration(750)
           .attrTween("d", arcTween);
     }
@@ -130,29 +129,95 @@ function AppPie(data, m, r) {
             d.y += r * 0.2;
             d.dy -= r * 0.2;
         }
-     }
+    }
 
-     var pathAnim = function(path, d, dir) {
+    var initCenterText = function(thisObj) {
+        appPie.append('text')
+                .attr('class', 'center-txt type')
+                .attr('y', thisObj.r * -0.16)
+                .text(function(d, i) {
+                    return TYPE[d.name];
+                });
+        appPie.append('text')
+                .attr('class', 'center-txt value')
+        appPie.append('text')
+                .attr('class', 'center-txt percentage')
+                .attr('y', thisObj.r * 0.16)
+        resetAllCenterText();
+    }
+
+    var setCenterText = function() {
+        var pieData = appPie.data()[0];
+        var clickedData = appPie.selectAll('.clicked').data();
+        var returnVal = function(d) {
+                            return d.val;
+                        };
+
+        var val, per;
+        if (2 !== pieData.name) {
+            val = d3.sum(clickedData, returnVal);
+            per = (val)? val/pieData.total*100 : null;
+        } else {
+            val = d3.mean(clickedData, returnVal);
+            per = null;
+        }
+
+        appPie.select('.value')
+            .text(function(d) {
+                return (val)? valToText(val) + TYPE_UNIT[d.name]
+                            : valToText(d.total) + TYPE_UNIT[d.name];
+            });
+        appPie.select('.percentage').text(function() {
+            return (per)? valToText(per) + '%' : '';
+        });
+    }
+
+    var resetAllCenterText = function() {
+        appPie.select('.value')
+            .text(function(d) {
+                return valToText(d.total) + TYPE_UNIT[d.name];
+            });
+        charts.selectAll('.percentage')
+            .text('');
+    }
+
+     var pathAnim = function(path, dir) {
         switch(dir) {
             case 0:
                 path.transition()
                     .duration(500)
                     .ease('bounce')
                     .attr('d', d3.svg.arc()
-                        .startAngle(d.x)
-                        .endAngle(d.x + d.dx)
-                        .innerRadius(d.y)
-                        .outerRadius(d.y + d.dy)
+                        .startAngle(function(d) {
+                            return d.x;
+                        })
+                        .endAngle(function(d) {
+                            return d.x + d.dx;
+                        })
+                        .innerRadius(function(d) {
+                            return d.y;
+                        })
+                        .outerRadius(function(d) {
+                            return d.y + d.dy;
+                        })
                     );
                 break;
 
             case 1:
                 path.transition()
                     .attr('d', d3.svg.arc()
-                        .startAngle(d.x)
-                        .endAngle(d.x + d.dx)
-                        .innerRadius(d.y)
-                        .outerRadius(d.y + d.dy * 1.2)
+                        .startAngle(function(d) {
+                            return d.x;
+                        })
+                        .endAngle(function(d) {
+                            return d.x + d.dx;
+                        })
+                        .innerRadius(function(d) {
+                            return d.y;
+                        })
+                        .outerRadius(function(d) {
+                            return d.y + d.dy * 1.2;
+                        })
                     );
                 break;
         }
@@ -169,18 +234,58 @@ function AppPie(data, m, r) {
                 .attr('r', (dir)? 10:6);
     }
 
+    var unclickAllPath = function() {
+        var paths = charts.selectAll('.clicked');
+        if (0 === paths[0].length) {
+            return;
+        }
+        pathAnim(paths, 0);
+        paths.classed('clicked', false);
+        resetAllCenterText();
+    }
+
     var eventObj = {
-        'click': magnify,
         'mouseover': function(d) {
             if (2 === d.depth) {
-                pathAnim(d3.select(this), d, 1);
+                pathAnim(d3.select(this), 1);
                 legendAnim(d, 1);
+                appPie.select('.value').text(function(app_d) {
+                    return valToText(d.val) + TYPE_UNIT[app_d.name];
+                });
+                appPie.select('.percentage').text(function(app_d) {
+                    return (2 === app_d.name)? ''
+                                : (d.val/app_d.total*100).toFixed(2) + '%';
+                });
             }
         },
         'mouseout': function(d) {
             if (2 === d.depth) {
-                pathAnim(d3.select(this), d, 0);
+                var thisPath = d3.select(this);
+                if (!thisPath.classed('clicked')) {
+                    pathAnim(thisPath, 0);
+                }
                 legendAnim(d, 0);
+            }
+            setCenterText();
+        },
+        'click': function(d) {
+            magnify(d);
+
+            if (0 === d.depth) {
+                unclickAllPath();
+                updateLineContext(appPie.data()[0].name, 0);
+            }
+
+            if (0 === appPie.selectAll('.clicked')[0].length) {
+                unclickAllPath();
+            }
+            if (2 === d.depth) {
+                var thisPath = d3.select(this);
+                var clicked = thisPath.classed('clicked');
+                pathAnim(thisPath, ~~(!clicked));
+                thisPath.classed('clicked', !clicked);
+                updateLineContext(appPie.data()[0].name, d.name);
+                setCenterText();
             }
         }
     }
@@ -198,14 +303,15 @@ function AppPie(data, m, r) {
                     .append("svg:g")
                         .attr("transform", "translate(" + (this.r + this.m) + "," + (this.r + this.m) + ")");
         this.update();
+        initCenterText(this);
     };
 
     this.update = function() {
         var groupCount = 0;
-        var itemCount = 0;
+        var colorIdx = 0;
         var groupCol;
 
-        path = appPie.data([this.dataset]).selectAll('path')
+        var path = appPie.data([this.dataset]).selectAll('path')
                 .data(partition.nodes);
 
         path.transition()
@@ -221,22 +327,22 @@ function AppPie(data, m, r) {
                     }
                     if (1 === d.depth) {
                         var childLen = d.children.length;
-                        itemCount = childLen;
+                        colorIdx = childLen + 2;
                         groupCol = d3.scale.ordinal()
                             .domain([0, childLen+2])
-                            .range(colorbrewer[colorSet[groupCount++]][childLen+2]);
-                        return groupCol(childLen+2);
+                            .range(colorbrewer[colorSet[groupCount]][colorIdx]);
+                        groupCount++;
+                        return groupCol(0);
                     }
-                    //console.log(itemCount);
-                    itemCount--;
-                    BASE[base].color[d.name] = groupCol(itemCount+2);
-                    return groupCol(itemCount+2);
+                    colorIdx--;
+                    BASE[base].color[d.name] = groupCol(colorIdx);
+                    return groupCol(colorIdx);
                 })
                 .style('stroke', '#ffffff')
                 .on(eventObj)
                 .each(stash);
 
         path.exit().remove();
-
+        resetAllCenterText();
     }
 }

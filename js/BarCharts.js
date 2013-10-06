@@ -38,7 +38,7 @@ function BarCharts() {
             .transition()
                 .style('width', chart_w * 0.95 + 'px')
                 .text(function(d) {
-                    return valToText(d.total);
+                    return valToText(d.total) + TYPE_UNIT[d.type];
                 });
     }
 
@@ -51,10 +51,10 @@ function BarCharts() {
                     return getBarPer(this).toFixed(0) + '%';
                 });
             },
-            'mouseout': function(d, i) {
+            'mouseout': function(d, i, j) {
                 var horizBars = d3.select(this.parentNode).selectAll('.horiz-bar');
-                horizBars.text(function(d) {
-                    return valToText(d.val);
+                horizBars.text(function() {
+                    return valToText(d.val) + TYPE_UNIT[j];
                 });
             },
             'click': function(d, i, j) {
@@ -79,8 +79,8 @@ function BarCharts() {
 
         horizBar.transition()
             .style('width', calBarWidth)
-            .text(function(d) {
-                return valToText(d.val);
+            .text(function(d, i, j) {
+                return valToText(d.val) + TYPE_UNIT[j];
             });
 
         horizBar.enter().append('div')
@@ -102,8 +102,8 @@ function BarCharts() {
                     .on(eventObj)
                     .transition()
                         .style('width', calBarWidth)
-                        .text(function(d) {
-                            return valToText(d.val);
+                        .text(function(d, i, j) {
+                            return valToText(d.val) + TYPE_UNIT[j];
                         });
 
         horizBar.exit()
@@ -113,7 +113,7 @@ function BarCharts() {
 
         d3.selectAll('.total-bar')
             .text(function(d) {
-                return valToText(d.total);
+                return valToText(d.total) + TYPE_UNIT[d.type];
             });
     }
 

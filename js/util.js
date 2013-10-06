@@ -42,7 +42,7 @@ function type_value_text(d) {
 function valToText(d) {
     // Add % for CTR
     if (d % 1 !== 0) {
-        return d.toFixed(2) + '%';
+        return d.toFixed(2);
     }
     else {
         return d;

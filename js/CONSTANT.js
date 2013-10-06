@@ -1,7 +1,7 @@
 var TYPE = ['Impressions', 'Clicks', 'CTR'];
 
 // Unit for CTR should be %. Disabled here and let valToText in util.js handle it.
-var TYPE_UNIT = ['', '', ''];
+var TYPE_UNIT = ['', '', '%'];
 
 
 var BASE = [ {
