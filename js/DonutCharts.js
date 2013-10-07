@@ -9,7 +9,6 @@ function DonutCharts() {
 
     var unclickAllPath = function() {
         var paths = charts.selectAll('.clicked');
-        console.log(paths);
         pathAnim(paths, 0);
         paths.classed('clicked', false);
         resetAllCenterText();

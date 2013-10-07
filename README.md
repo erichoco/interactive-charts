@@ -14,7 +14,6 @@ Please use the prev/next button at the bottom to navigate through b) and c).
 
 
 TODO:
-    a) App pie path radius fixed when rearrange angles
-    b) Radio button and chart elements interactions
-    c) Integrate DonutCharts and AppPieCharts (center text)
+    a) Radio button and chart elements interactions
+    b) Integrate DonutCharts and AppPieCharts (center text)
 

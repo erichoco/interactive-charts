@@ -73,23 +73,22 @@ function AppPie(data, m, r) {
 
     // Distort the specified node to 80% of its parent.
     function magnify(node) {
-      if (node.depth === 2) return;
-      if (parent = node.parent) {
-        var parent,
+        if (node.depth === 2) return;
+        if (parent = node.parent) {
+            var parent,
             x = parent.x,
             k = .7;
-        parent.children.forEach(function(sibling) {
-          x += reposition(sibling, x, sibling === node
+            parent.children.forEach(function(sibling) {
+            x += reposition(sibling, x, sibling === node
               ? parent.dx * k / node.value
               : parent.dx * (1 - k) / (parent.value - node.value));
-        });
-      } else {
-        reposition(node, 0, node.dx / node.value);
-      }
-
-      appPie.selectAll('path').transition()
-          .duration(750)
-          .attrTween("d", arcTween);
+            });
+        } else {
+            reposition(node, 0, node.dx / node.value);
+        }
+        appPie.selectAll('path').transition()
+            .duration(750)
+            .attrTween("d", arcTween);
     }
 
     // Recursively reposition the node at position x with scale k.
@@ -122,6 +121,7 @@ function AppPie(data, m, r) {
      * Code by Mike Bistock https://gist.github.com/mbostock/1306365 
      */
 
+    /* Reassign radius (y-coord) of the paths (Fixes default y, dy by the partition layout) */
     var tuneRad = function(d) {
         if(d.depth === 0) {
             d.dy += r * 0.15;
@@ -129,6 +129,7 @@ function AppPie(data, m, r) {
             d.y += r * 0.2;
             d.dy -= r * 0.2;
         }
+        d.dy0 = d.dy;
     }
 
     var initCenterText = function(thisObj) {
@@ -182,45 +183,40 @@ function AppPie(data, m, r) {
     }
 
      var pathAnim = function(path, dir) {
+        var ease, duration, scale;
         switch(dir) {
             case 0:
-                path.transition()
-                    .duration(500)
-                    .ease('bounce')
-                    .attr('d', d3.svg.arc()
-                        .startAngle(function(d) {
-                            return d.x;
-                        })
-                        .endAngle(function(d) {
-                            return d.x + d.dx;
-                        })
-                        .innerRadius(function(d) {
-                            return d.y;
-                        })
-                        .outerRadius(function(d) {
-                            return d.y + d.dy;
-                        })
-                    );
+                ease = 'bounce';
+                duration = 500;
+                scale = 1;
                 break;
 
             case 1:
-                path.transition()
-                    .attr('d', d3.svg.arc()
-                        .startAngle(function(d) {
-                            return d.x;
-                        })
-                        .endAngle(function(d) {
-                            return d.x + d.dx;
-                        })
-                        .innerRadius(function(d) {
-                            return d.y;
-                        })
-                        .outerRadius(function(d) {
-                            return d.y + d.dy * 1.2;
-                        })
-                    );
+                ease = 'cubic-in-out';
+                duration = 250;
+                scale = 1.2;
                 break;
         }
+        path.transition()
+            .duration(duration)
+            .ease(ease)
+            .attr('d', d3.svg.arc()
+                .startAngle(function(d) {
+                    return d.x;
+                })
+                .endAngle(function(d) {
+                    return d.x + d.dx;
+                })
+                .innerRadius(function(d) {
+                    return d.y;
+                })
+                .outerRadius(function(d) {
+                    if (d.dy0 * scale != d.dy) {
+                        d.dy = d.dy0 * scale;
+                    }
+                    return d.y + d.dy;
+                })
+            );
     }
 
     var legendAnim = function(pathD, dir) {
@@ -269,17 +265,22 @@ function AppPie(data, m, r) {
             setCenterText();
         },
         'click': function(d) {
-            magnify(d);
-
+            var thisPieClean = (0 === appPie.selectAll('.clicked')[0].length)
             if (0 === d.depth) {
+                if (thisPieClean) {
+                    magnify(d);
+                }
                 unclickAllPath();
                 updateLineContext(appPie.data()[0].name, 0);
-            }
-
-            if (0 === appPie.selectAll('.clicked')[0].length) {
-                unclickAllPath();
-            }
-            if (2 === d.depth) {
+            } else if (1 === d.depth) {
+                if (thisPieClean) {
+                    unclickAllPath();
+                }
+                magnify(d);
+            } else if (2 === d.depth) {
+                if (thisPieClean) {
+                    unclickAllPath();
+                }
                 var thisPath = d3.select(this);
                 var clicked = thisPath.classed('clicked');
                 pathAnim(thisPath, ~~(!clicked));
