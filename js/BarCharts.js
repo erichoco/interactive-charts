@@ -53,8 +53,8 @@ function BarCharts() {
             },
             'mouseout': function(d, i, j) {
                 var horizBars = d3.select(this.parentNode).selectAll('.horiz-bar');
-                horizBars.text(function() {
-                    return valToText(d.val) + TYPE_UNIT[j];
+                horizBars.text(function(bar_d, bar_i, bar_j) {
+                    return valToText(bar_d.val) + TYPE_UNIT[bar_j];
                 });
             },
             'click': function(d, i, j) {

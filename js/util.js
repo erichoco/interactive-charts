@@ -39,26 +39,6 @@ function valToText(d) {
     }
 };
 
-function formatDateObj(date, unit) {
-    var year = date.getFullYear();
-    var mon = date.getMonth() + 1;
-    var day = date.getDate();
-    var hour = date.getHours();
-
-    if (hour < 10)
-        hour = '0'+ hour.toString();
-
-    if (unit === 'weekly' || unit === 'daily') {
-        return year + '/' + mon + '/' + day;
-    } else if (unit === 'monthly') {
-        return year + '/' + mon;
-    } else if (unit === 'hourly') {
-        return mon + '/' + day + " " + hour;
-    } else {
-        console.error('Time unit error');
-    }
-}
-
 function createLegend(chart, base) {
     var legends = chart.select('.legend')
                 .selectAll('g')
@@ -85,6 +65,26 @@ function createLegend(chart, base) {
         .text(function(d) {
             return d;
         });
+}
+
+function formatDateObj(date, unit) {
+    var year = date.getFullYear();
+    var mon = date.getMonth() + 1;
+    var day = date.getDate();
+    var hour = date.getHours();
+
+    if (hour < 10)
+        hour = '0'+ hour.toString();
+
+    if (unit === 'weekly' || unit === 'daily') {
+        return year + '/' + mon + '/' + day;
+    } else if (unit === 'monthly') {
+        return year + '/' + mon;
+    } else if (unit === 'hourly') {
+        return mon + '/' + day + " " + hour;
+    } else {
+        console.error('Time unit error');
+    }
 }
 
 function createTooltip(top, left, id, content, color) {
