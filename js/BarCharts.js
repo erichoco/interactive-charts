@@ -31,7 +31,6 @@ function BarCharts() {
                 'font-size': chart_h * 0.4 * 0.75 + 'px',
             })
             .on('click', function(d, i) {
-                console.log(this);
                 unclickAllHorizBar();
                 updateLineContext(d.type, 0);
             })
@@ -152,7 +151,7 @@ function BarCharts() {
     }
 
     this.update = function(dataset) {
-        var barWrappers = charts.selectAll('.bars-wrapper')
+        var barWrappers = charts.selectAll('.bars')
                             .data(dataset);
         updateBars();
     }
@@ -160,15 +159,21 @@ function BarCharts() {
     this.changeType = function(type, cat) {
         var bars = charts.select('.type' + type);
         var horizBars = bars.selectAll('.horiz-bar');
-        if (1 === cat.length) {
-            console.log($(bars.select('.total-bar')[0]));
-            $(bars.select('.total-bar')[0]).click();
+        var totalBar = bars.select('.total-bar');
+
+        var invokeClick = function(d_clicked, i_clicked, j_clidk) {
+            console.log(d_clicked);
+            var barToClick = horizBars.filter(function(d, i) {
+                return d.cat === d_clicked.cat;
+            });
+            $(barToClick[0]).d3Click();
+        }
+
+        var clickedBars = charts.selectAll('.clicked');
+        if (0 !== clickedBars[0].length) {
+            clickedBars.each(invokeClick);
         } else {
-            for (var j = 1; j < cat.length; j++) {
-                $(horizBars.filter(function(d) {
-                    return d.cat === cat[j];
-                })[0]).click();
-            }
+            $(totalBar[0]).d3Click();
         }
     }
 };

@@ -85,11 +85,11 @@ function DonutCharts() {
     }
 
     var resetAllCenterText = function() {
-        charts.selectAll('.value')
+        charts.selectAll('.donut').select('.value')
             .text(function(d) {
                 return valToText(d.total) + TYPE_UNIT[d.type];
             });
-        charts.selectAll('.percentage')
+        charts.selectAll('.donut').select('.percentage')
             .text('');
     }
 
@@ -160,6 +160,7 @@ function DonutCharts() {
         };
 
         var pie = d3.layout.pie()
+                        .sort(null)
                         .value(function(d) {
                             return d.val;
                         });
@@ -232,19 +233,24 @@ function DonutCharts() {
         updateDonut();
     }
 
-    this.changeType = function(type, cat) {
+    this.changeType = function(type) {
 
         var donut = charts.select('.type' + type);
-        var paths = donut.selectAll('path');
-        if (1 === cat.length) {
-            console.log($(donut.select('circle')[0]));
-            $(donut.select('circle')[0]).click();
+        var path = donut.selectAll('path');
+        var circle = donut.select('circle');
+
+        var invokeClick = function(d_clicked, i_clicked, j_clidk) {
+            var pathToClick = path.filter(function(d, i) {
+                return d.data.cat === d_clicked.data.cat;
+            });
+            $(pathToClick[0]).d3Click();
+        }
+
+        var clickedPath = charts.selectAll('.clicked');
+        if (0 != clickedPath[0].length) {
+            clickedPath.each(invokeClick);
         } else {
-            for (var j = 1; j < cat.length; j++) {
-                $(paths.filter(function(d) {
-                    return d.cat === cat[j];
-                })[0]).click();
-            }
+            $(circle[0]).d3Click();
         }
     }
 }

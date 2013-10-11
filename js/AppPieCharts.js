@@ -31,10 +31,33 @@ function AppPieCharts() {
             alert('Error: Data type unmatched');
         }
         for (var i = 0; i < dataset.length; i++) {
-            appPies[i],dataset = dataset[i];
+            appPies[i].dataset = dataset[i];
             appPies[i].update();
         };
     }
+/*
+    this.changeType = function(type) {
+        console.log(type);
+        var appPie = appPies[type];
+        var path = appPie.selectAll('path');
+
+        var invokeClick = function(d_clicked, i_clicked, j_clidk) {
+            console.log(d_clicked);/*
+            var pathToClick = path.filter(function(d, i) {
+                return d.data.cat === d_clicked.data.cat;
+            });
+            $(pathToClick[0]).d3Click();
+        }
+
+        var clickedPath = charts.selectAll('.clicked');
+        if (0 === clickedPath[0].length) {
+            clickedPath.each(invokeClick);
+        } else {
+            $(path.filter(function(d, i) {
+                return i === 0;
+            })[0]).d3Click();
+        }
+    }*/
 }
 
 function AppPie(data, m, r) {
@@ -178,7 +201,7 @@ function AppPie(data, m, r) {
             .text(function(d) {
                 return valToText(d.total) + TYPE_UNIT[d.name];
             });
-        charts.selectAll('.percentage')
+        appPie.select('.percentage')
             .text('');
     }
 
@@ -312,10 +335,12 @@ function AppPie(data, m, r) {
         var colorIdx = 0;
         var groupCol;
 
+        //appPie.data([this.dataset]);
         var path = appPie.data([this.dataset]).selectAll('path')
                 .data(partition.nodes);
 
-        path.transition()
+        path.each(tuneRad)
+            .transition()
             .duration(500)
             .attr('d', arc);
 

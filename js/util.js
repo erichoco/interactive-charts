@@ -1,3 +1,13 @@
+
+jQuery.fn.d3Click = function () {
+  this.each(function (i, e) {
+    var evt = document.createEvent("MouseEvents");
+    evt.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+
+    e.dispatchEvent(evt);
+  });
+};
+
 /*
  * get_percentage(1, [1, 1, 1]) -> 33 (round_place becomes undefined)
  * get_percentage(1, [1, 2, 3], 2) -> 16.67
