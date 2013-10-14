@@ -72,7 +72,12 @@
 
         function changeType() {
             var newContext = line_chart.context;
-            newContext.type = $('input[name=type]:checked').val();
+            var newType = $('input[name=type]:checked').val();
+            if (newContext.type === parseInt(newType)) {
+                return;
+            } else {
+                newContext.type = newType;
+            }
 
             var curChart = bottomCharts[slider.current];
             curChart.changeType(newContext.type);
