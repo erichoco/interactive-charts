@@ -11,7 +11,7 @@ jQuery.fn.d3Click = function () {
 /*
  * get_percentage(1, [1, 1, 1]) -> 33 (round_place becomes undefined)
  * get_percentage(1, [1, 2, 3], 2) -> 16.67
- */
+ 
 function get_percentage(data, dataset, round_place) {
 
     var level = 1;
@@ -19,7 +19,7 @@ function get_percentage(data, dataset, round_place) {
         level *= 10;
     };
     return Math.round(data * 100 * level / d3.sum(dataset)) / level;
-}
+}*/
 
 
 /* 

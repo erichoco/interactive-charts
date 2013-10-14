@@ -35,32 +35,40 @@ function AppPieCharts() {
             appPies[i].update();
         };
     }
-/*
+
     this.changeType = function(type) {
-        console.log(type);
-        var appPie = appPies[type];
+        var appPie = appPies[type].getThisPie();
         var path = appPie.selectAll('path');
 
         var invokeClick = function(d_clicked, i_clicked, j_clidk) {
-            console.log(d_clicked);/*
             var pathToClick = path.filter(function(d, i) {
-                return d.data.cat === d_clicked.data.cat;
+                return d.name === d_clicked.name && d.depth === d_clicked.depth;
             });
             $(pathToClick[0]).d3Click();
         }
 
         var clickedPath = charts.selectAll('.clicked');
-        if (0 === clickedPath[0].length) {
+        if (0 !== clickedPath[0].length) {
             clickedPath.each(invokeClick);
         } else {
             $(path.filter(function(d, i) {
                 return i === 0;
             })[0]).d3Click();
         }
-    }*/
+    }
+
+    this.resetCharts = function(type) {
+        var appPie = appPies[type].getThisPie();
+        $(appPie.selectAll('path').filter(function(d) {
+            return 0 === d.depth;
+        })[0]).d3Click();
+    }
 }
 
 function AppPie(data, m, r) {
+    /*******************
+     * private members *
+     *******************/
     var charts = d3.select('#app-pie-charts');
     var appPie;
 
@@ -314,6 +322,11 @@ function AppPie(data, m, r) {
         }
     }
 
+
+
+    /******************
+     * public members *
+     ******************/
     this.dataset = data;
     this.m = m;
     this.r = r;
@@ -370,5 +383,9 @@ function AppPie(data, m, r) {
 
         path.exit().remove();
         resetAllCenterText();
-    }
+    };
+
+    this.getThisPie = function() {
+        return appPie;
+    };
 }

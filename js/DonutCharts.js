@@ -1,6 +1,8 @@
 function DonutCharts() {
+    /*******************
+     * private members *
+     *******************/
     var base = 1;
-
     var charts = d3.select('#donut-charts');
 
     var chart_m,
@@ -199,6 +201,10 @@ function DonutCharts() {
         resetAllCenterText();
     }
 
+
+    /******************
+     * public members *
+     ******************/
     this.create = function(dataset) {
         var $charts = $('#donut-charts');
         chart_m = $charts.innerWidth() / dataset.length / 2 * 0.14;
@@ -234,7 +240,6 @@ function DonutCharts() {
     }
 
     this.changeType = function(type) {
-
         var donut = charts.select('.type' + type);
         var path = donut.selectAll('path');
         var circle = donut.select('circle');
@@ -247,10 +252,16 @@ function DonutCharts() {
         }
 
         var clickedPath = charts.selectAll('.clicked');
-        if (0 != clickedPath[0].length) {
+        if (0 !== clickedPath[0].length) {
             clickedPath.each(invokeClick);
         } else {
             $(circle[0]).d3Click();
         }
+    }
+
+    this.resetCharts = function(type) {
+        $(charts.selectAll('.donut circle').filter(function(d) {
+            return d.type === type;
+        })[0]).d3Click();
     }
 }

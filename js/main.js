@@ -24,9 +24,14 @@
         line_chart.create(jsonSet[0].dataset, lineContext);
         initLineChartVar(line_chart);
 
+
+        var bottomCharts = [];
+
         var slider = new Slider($('#bottom-slider ul'), $('#slider-nav'));
 
         slider.nav.find('button').on('click', function(){
+            bottomCharts[slider.current].resetCharts(lineContext.type);
+
             slider.setCurrent($(this).data('dir'));
             slider.transition();
 
@@ -34,8 +39,6 @@
             newContext.base = slider.current;
             line_chart.update(jsonSet[slider.current].dataset, newContext);
         });
-
-        var bottomCharts = [];
 
         var bars = new BarCharts();
         bars.create(prepareData(jsonSet[0].dataset, 0));

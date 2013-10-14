@@ -51,9 +51,10 @@ function BarCharts() {
                 });
             },
             'mouseout': function(d, i, j) {
-                var horizBars = d3.select(this.parentNode).selectAll('.horiz-bar');
+                var bars = d3.select(this.parentNode);
+                var horizBars = bars.selectAll('.horiz-bar');
                 horizBars.text(function(bar_d, bar_i, bar_j) {
-                    return valToText(bar_d.val) + TYPE_UNIT[bar_j];
+                    return valToText(bar_d.val) + TYPE_UNIT[bars.data()[0].type];
                 });
             },
             'click': function(d, i, j) {
@@ -166,14 +167,18 @@ function BarCharts() {
             var barToClick = horizBars.filter(function(d, i) {
                 return d.cat === d_clicked.cat;
             });
-            $(barToClick[0]).d3Click();
+            $(barToClick[0]).click();//Click();
         }
 
         var clickedBars = charts.selectAll('.clicked');
         if (0 !== clickedBars[0].length) {
             clickedBars.each(invokeClick);
         } else {
-            $(totalBar[0]).d3Click();
+            $(totalBar[0]).click();
         }
+    }
+
+    this.resetCharts = function(type) {
+        $(charts.select('.type' + type + ' .total-bar')[0]).click();
     }
 };
