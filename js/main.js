@@ -49,7 +49,6 @@
         bottomCharts.push(donuts);
 
         var appPies = new AppPieCharts();
-        //var appData = appPieData();
         appPies.create(prepareNestedData(jsonSet[2].dataset, 2));
         bottomCharts.push(appPies);
 
