@@ -42,7 +42,9 @@ function AppPieCharts() {
 
         var invokeClick = function(d_clicked, i_clicked, j_clidk) {
             var pathToClick = path.filter(function(d, i) {
-                return d.name === d_clicked.name && d.depth === d_clicked.depth;
+                return d.name === d_clicked.name && 
+                       d.depth === d_clicked.depth &&
+                      !d3.select(this).classed('clicked');
             });
             $(pathToClick[0]).d3Click();
         }

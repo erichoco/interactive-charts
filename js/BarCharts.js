@@ -165,7 +165,8 @@ function BarCharts() {
         var invokeClick = function(d_clicked, i_clicked, j_clidk) {
             console.log(d_clicked);
             var barToClick = horizBars.filter(function(d, i) {
-                return d.cat === d_clicked.cat;
+                return d.cat === d_clicked.cat &&
+                      !d3.select(this).classed('clicked');
             });
             $(barToClick[0]).click();//Click();
         }

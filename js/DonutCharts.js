@@ -129,8 +129,9 @@ function DonutCharts() {
                     return valToText(d.data.val) + TYPE_UNIT[donut_d.type];
                 });
                 thisDonut.select('.percentage').text(function(donut_d) {
-                    return (2 === donut_d.type)? ''
-                                : (d.data.val/donut_d.total*100).toFixed(2) + '%';
+                    return (2 === donut_d.type)
+                            ? ''
+                            : (d.data.val/donut_d.total*100).toFixed(2) + '%';
                 });
             },
             
@@ -170,8 +171,9 @@ function DonutCharts() {
         var arc = d3.svg.arc()
                         .innerRadius(chart_r * 0.7)
                         .outerRadius(function() {
-                            return (d3.select(this).classed('clicked'))? chart_r * 1.08
-                                                                       : chart_r;
+                            return (d3.select(this).classed('clicked'))
+                                    ? chart_r * 1.08
+                                    : chart_r;
                         });
 
         // Start joining data with paths
@@ -225,7 +227,8 @@ function DonutCharts() {
                         .attr('class', function(d, i) {
                             return 'donut type' + i;
                         })
-                        .attr('transform', 'translate(' + (chart_r+chart_m) + ',' + (chart_r+chart_m) + ')');
+                        .attr('transform', 'translate(' + (chart_r+chart_m) + ','
+                                         + (chart_r+chart_m) + ')');
         createCenter();
         updateDonut();
         createLegend(charts, base);
@@ -246,7 +249,8 @@ function DonutCharts() {
 
         var invokeClick = function(d_clicked, i_clicked, j_clidk) {
             var pathToClick = path.filter(function(d, i) {
-                return d.data.cat === d_clicked.data.cat;
+                return d.data.cat === d_clicked.data.cat && 
+                      !d3.select(this).classed('clicked');
             });
             $(pathToClick[0]).d3Click();
         }
