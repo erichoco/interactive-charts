@@ -128,6 +128,8 @@ function LineChart() {
     var getLineData = function(dataset, context) {
         var totalMin = NaN,
             catMax = NaN;
+        var dataLen = dataset.length,
+            catLen = context.cat.length;
 
         var domain = {
             'start': dataset[0].time,
@@ -137,12 +139,12 @@ function LineChart() {
         };
 
         var lines = new Array();
-        for (var i = 0; i < context.cat.length; i++) {
+        for (var i = 0; i < catLen; i++) {
             lines.push(new Array());
         }
 
-        for (var i = 0; i < context.cat.length; i++) {
-            for (var j = 0; j < dataset.length; j++) {
+        for (var i = 0; i < catLen; i++) {
+            for (var j = 0; j < dataLen; j++) {
                 var curData = dataset[j];
                 if (curData.cat !== context.cat[i]) {
                     continue;
@@ -155,7 +157,6 @@ function LineChart() {
                 } else {
                     catMax = (catMax > coord[1].val)? catMax : coord[1].val;
                 }
-
                 domain = updateDomain(curData, context.type, domain);
             }
         }
@@ -274,6 +275,10 @@ function LineChart() {
     this.update = function(dataset, context) {
         if (dataset !== null) {
             this.dataset = dataset;
+        }
+        if (1 === context.cat.length && 0 !== context.cat[0]) {
+            context.cat.unshift(0);
+            this.context = context;
         }
 
         colors = BASE[context.base].color;
