@@ -8,18 +8,13 @@ jQuery.fn.d3Click = function () {
   });
 };
 
-/*
- * get_percentage(1, [1, 1, 1]) -> 33 (round_place becomes undefined)
- * get_percentage(1, [1, 2, 3], 2) -> 16.67
+Array.prototype.max = function(){
+    return Math.max.apply(null, this);
+};
  
-function get_percentage(data, dataset, round_place) {
-
-    var level = 1;
-    for (var i = 0; i < round_place; i++) {
-        level *= 10;
-    };
-    return Math.round(data * 100 * level / d3.sum(dataset)) / level;
-}*/
+Array.prototype.min = function(){
+    return Math.min.apply(null, this);
+};
 
 
 /* 
@@ -39,8 +34,11 @@ function getBarPer(thisEl) {
     }
 }
 
+/* 
+ * Detect if the value is of CTR
+ * Return rounded value if so
+ */
 function valToText(d) {
-    // Add % for CTR
     if (d % 1 !== 0) {
         return d.toFixed(2);
     }

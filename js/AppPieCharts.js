@@ -80,6 +80,8 @@ function AppPie(data, m, r) {
         .range(colorbrewer.RdBu[9]);//category20b();
     var colorSet = ['YlOrBr', 'PuBu', 'RdPu', 'YlGn'];
 
+    var pieNotMagnified = true;
+
     /* Region
      * Code by Mike Bistock https://gist.github.com/mbostock/1306365
      */
@@ -115,8 +117,11 @@ function AppPie(data, m, r) {
               ? parent.dx * k / node.value
               : parent.dx * (1 - k) / (parent.value - node.value));
             });
+            pieNotMagnified = false;
         } else {
             reposition(node, 0, node.dx / node.value);
+            pieNotMagnified = true;
+
         }
         appPie.selectAll('path').transition()
             .duration(750)
@@ -299,14 +304,16 @@ function AppPie(data, m, r) {
         'click': function(d) {
             var thisPieClean = (0 === appPie.selectAll('.clicked')[0].length)
             if (0 === d.depth) {
-                if (thisPieClean) {
+                if (!pieNotMagnified) {
                     magnify(d);
+                } else {
+                    unclickAllPath();
+                    updateLineContext(appPie.data()[0].name, 0);
                 }
-                unclickAllPath();
-                updateLineContext(appPie.data()[0].name, 0);
             } else if (1 === d.depth) {
                 if (thisPieClean) {
                     unclickAllPath();
+                    updateLineContext(appPie.data()[0].name, 0);
                 }
                 magnify(d);
             } else if (2 === d.depth) {

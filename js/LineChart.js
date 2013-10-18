@@ -18,9 +18,9 @@ function LineChart() {
     var chart_w = parseInt(chart.style('width')) * 0.95 - chart_m.left - chart_m.right,
         chart_h = parseInt(chart.style('height')) * 0.9 - chart_m.top - chart_m.bottom;
 
-    var platform_class_name = ['tol-bg', 'ios-bg', 'and-bg'];
-
     var colors;
+
+    var totalHidden = false;
 
     /* Preperation functions for drawing line */
     // default scale value, will be overwritten later on
@@ -108,10 +108,10 @@ function LineChart() {
                                                 : domain.start,
             "end": (datum.time > domain.end)? datum.time
                                             : domain.end,
-            "min": (datum.data[type].val < domain.min)? 
+            "min": (datum.data[type].val < domain.min)?
                                             datum.data[type].val
                                           : domain.min,
-            "max": (datum.data[type].val > domain.max)? 
+            "max": (datum.data[type].val > domain.max)?
                                             datum.data[type].val
                                           : domain.max,
         };
@@ -122,8 +122,12 @@ function LineChart() {
      * Return a set of lines for the line chart, where the number of lines equals
      * to the number of cat in the context.
      * Each line contains a set of coordinates.
+     * (Note: if line of total is far from lines of other categories,
+     *        line of total will be hidden.)
      */
     var getLineData = function(dataset, context) {
+        var totalMin = NaN,
+            catMax = NaN;
 
         var domain = {
             'start': dataset[0].time,
@@ -133,25 +137,33 @@ function LineChart() {
         };
 
         var lines = new Array();
-
         for (var i = 0; i < context.cat.length; i++) {
             lines.push(new Array());
         }
 
         for (var i = 0; i < context.cat.length; i++) {
-
             for (var j = 0; j < dataset.length; j++) {
-
                 var curData = dataset[j];
-
-                if (curData.cat !== context.cat[i]) { continue; }
-
+                if (curData.cat !== context.cat[i]) {
+                    continue;
+                }
                 var coord = [curData.time, curData.data[context.type]];
-
                 lines[i].push(coord);
+
+                if (0 === context.cat[i]) {
+                    totalMin = (totalMin < coord[1].val)? totalMin : coord[1].val;
+                } else {
+                    catMax = (catMax > coord[1].val)? catMax : coord[1].val;
+                }
 
                 domain = updateDomain(curData, context.type, domain);
             }
+        }
+
+        if (totalMin - catMax > totalMin * 0.2 && lines.length > 2) {
+            lines.shift();
+            context.cat.shift();
+            domain.max = catMax;
         }
         configAxes([domain.start, domain.end], [domain.min, domain.max]);
 
