@@ -33,6 +33,12 @@ body {
   #bottom-slider li {
     float: left; }
 
+#slider-nav {
+  margin: 1%;
+  width: 98%; }
+  #slider-nav button {
+    float: right; }
+
 .bottom-charts {
   margin: 1%;
   width: 98%;

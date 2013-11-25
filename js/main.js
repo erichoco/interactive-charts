@@ -29,7 +29,9 @@
 
         var slider = new Slider($('#bottom-slider ul'), $('#slider-nav'));
 
-        slider.nav.find('button').on('click', function(){
+        slider.nav.find('button').on('click', function() {
+            sliderSlide($(this).data('dir'));
+        }); /*function(){
             bottomCharts[slider.current].resetCharts(lineContext.type);
 
             slider.setCurrent($(this).data('dir'));
@@ -38,7 +40,18 @@
             var newContext = line_chart.context;
             newContext.base = slider.current;
             line_chart.update(jsonSet[slider.current].dataset, newContext);
-        });
+        });*/
+
+        document.onkeydown = function(evt) {
+            e = evt || window.event;
+            if (37 === e.keyCode) {
+                sliderSlide('prev');
+            }
+            else if (39 === e.keyCode) {
+                sliderSlide('next');
+            }
+        }
+
 
         var bars = new BarCharts();
         bars.create(prepareData(jsonSet[0].dataset, 0));
@@ -80,6 +93,17 @@
 
             var curChart = bottomCharts[slider.current];
             curChart.changeType(newContext.type);
+        }
+
+        function sliderSlide(dir) {
+            bottomCharts[slider.current].resetCharts(lineContext.type);
+
+            slider.setCurrent(dir);
+            slider.transition();
+
+            var newContext = line_chart.context;
+            newContext.base = slider.current;
+            line_chart.update(jsonSet[slider.current].dataset, newContext);
         }
     });
 })();

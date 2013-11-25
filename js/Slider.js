@@ -22,7 +22,6 @@ Slider.prototype.transition = function(coords) {
 Slider.prototype.setCurrent = function(dir) {
     var pos = this.current;
     pos += (~~(dir === 'next') || -1);
-    console.log(this.chart_len);
 
     this.current = (pos < 0)? this.chart_len - 1 : pos % this.chart_len;
 };
