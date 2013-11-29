@@ -4,12 +4,12 @@
     <meta charset="utf-8">
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Total Prototype</title>
+    <title>Overview Prototype</title>
     <link type="text/css" rel="stylesheet" href="css/style.css"></link>
 </head>
 <body>
     <div id="content-wrapper">
-        <h1>kuad數據總覽</h1>
+        <h1>Interactive Charts</h1>
         <p>This is the prototype version.</p>
         <button type="button" id="refresh-btn">Refresh data</button>
         <div id="line-chart">
@@ -30,11 +30,12 @@
                 </li>
             </ul>
         </div>
-        <div id="slider-nav">
-            <button data-dir="prev">Previous</button>
+        <div id="slider-nav" class="clearfix">
             <button data-dir="next">Next</button>
+            <button data-dir="prev">Previous</button>
         </div>
     </div>
+    <p class="foot">By Eric Chiu</p>
 
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
     <script src="http://d3js.org/d3.v3.js" charset="utf-8"></script>

@@ -72,14 +72,13 @@ body {
 }
 
 #slider-nav {
-    margin: 1%;
-    width: 98%;
+    margin: 2%;
+    width: 96%;
     button {
         float: right;
     }
 }
 
-//#bar-charts {
 .bottom-charts {
     margin: 1%;
     width: 98%;
@@ -90,6 +89,12 @@ body {
     #labels-wrapper {
         padding: 5px;
     }
+}
+
+p.foot {
+    font: 1em, "Georgia", serif;
+    color: #888888;
+    text-align: center;
 }
 
 .axis {
@@ -227,4 +232,17 @@ div.platform-name {
 .tol-bg {
     background-color: $tol_color;
     stroke: $tol_color;
+}
+
+.clearfix:after {
+    content: ".";
+    display: block;
+    clear: both;
+    visibility: hidden;
+    line-height: 0;
+    height: 0;
+}
+ 
+.clearfix {
+    display: inline-block;
 }

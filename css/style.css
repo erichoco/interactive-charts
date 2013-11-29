@@ -34,8 +34,8 @@ body {
     float: left; }
 
 #slider-nav {
-  margin: 1%;
-  width: 98%; }
+  margin: 2%;
+  width: 96%; }
   #slider-nav button {
     float: right; }
 
@@ -46,6 +46,11 @@ body {
   overflow-y: hidden; }
   .bottom-charts #labels-wrapper {
     padding: 5px; }
+
+p.foot {
+  font: 1em, "Georgia", serif;
+  color: #888888;
+  text-align: center; }
 
 .axis path, .axis line {
   fill: none;
@@ -186,3 +191,14 @@ div.platform-name {
 .tol-bg {
   background-color: #5e5e5e;
   stroke: #5e5e5e; }
+
+.clearfix:after {
+  content: ".";
+  display: block;
+  clear: both;
+  visibility: hidden;
+  line-height: 0;
+  height: 0; }
+
+.clearfix {
+  display: inline-block; }
