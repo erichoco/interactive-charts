@@ -21,6 +21,7 @@
 
         var line_chart;        // shared line chart
         line_chart = new LineChart();
+				console.log('line data!!', jsonSet[0].dataset);
         line_chart.create(jsonSet[0].dataset, lineContext);
         initLineChartVar(line_chart);
 

@@ -174,6 +174,7 @@ function LineChart() {
     var updateLines = function(lines, context) {
 
         // Join new data to lines
+				console.log('lines yo', lines);
         var lines = chart_svg.selectAll('.line')
                             .data(lines);
 
@@ -250,7 +251,7 @@ function LineChart() {
         colors = BASE[context.base].color;
 
         var lines = getLineData(dataset, context);
-
+				console.log('getLineData: ', lines);
         /* Creating real svg elements & binding data */
         chart_svg = chart.append('svg')
                         .attr('width', chart_w + chart_m.left + chart_m.right)
