@@ -54,8 +54,8 @@ function createLegend(chart, base) {
                 .enter().append('g')
                     .attr('transform', function(d, i) {
                         if (2 === base) {
-                            return 'translate(' + ((i%10)*100 + 50) + ', ' +
-                                ((Math.floor(i/10))*30 + 10) + ')';
+                            return 'translate(' + ((i%8)*100 + 50) + ', ' +
+                                ((Math.floor(i/8))*30 + 10) + ')';
                         }
                         return 'translate(' + (i * 150 + 50) + ', 10)';
                     });
