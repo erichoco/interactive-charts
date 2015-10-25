@@ -6,7 +6,8 @@ This version includes
 
 1. line chart: display data tracks over an interval of time
 2. bar charts: display data summary based on base1
-3. pie charts: display data summary based on base2
+3. pie charts: display data summary based on base2  
+   (see also: http://bl.ocks.org/erichoco/6694616)
 4. nested pie charts: display data summary based on base3
 
 and some interactions between them.  
